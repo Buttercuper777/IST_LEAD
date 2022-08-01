@@ -2,7 +2,7 @@
 {
     public class Location
     {
-        public string col { get; set; }
+        public int col { get; set; }
         public int row { get; set; }
     }
 }

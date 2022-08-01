@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using ExcelDataReader;
 using Newtonsoft.Json;
 using IST_LEAD.Core;
+using IST_LEAD.Core.Models.ExcelHandlerModels;
 
 namespace IST_LEAD.BusinessLogic.Sevices
 {
@@ -18,8 +22,7 @@ namespace IST_LEAD.BusinessLogic.Sevices
         
         private static string FileUrl { get; set; }
         private static string FileName { get; set; }
-
-        private static bool FileDownloadSuccess { get; set; } = false;
+        
 
         public HandleExcelService(string filePath, string fileName)
         {
@@ -28,26 +31,28 @@ namespace IST_LEAD.BusinessLogic.Sevices
         }
         
         // === === === Point of entry === === ===
-        public void HandleExcel()
+        public string HandleExcel()
         {
             var fileManager = new FileManager();
-                Directory.CreateDirectory(pathString);
-
-                pathString = System.IO.Path.Combine(pathString,
+            
+            Directory.CreateDirectory(pathString);
+            
+            var fileString = System.IO.Path.Combine(pathString,
                     fileManager.Base64Encode(FileName));
                 
                 
-                bool dlResult = GetFileByPath(pathString);
+                bool dlResult = GetFileByPath(fileString);
 
                 if(dlResult)
                 {
-                    string res = OpenExelFile(pathString);
-                    
+                    var res = OpenExelFile(fileString);
+                    return res;
                 }
                 else
                 {
-                    
+                    return null;
                 }
+            
         }
         // === === === === [END] === === === ===
         
@@ -78,6 +83,8 @@ namespace IST_LEAD.BusinessLogic.Sevices
         // === === === === [END] === === === ===
         
         
+        
+        // === === Open Excel -> Get Columns === ===
         private string OpenExelFile(string path)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -94,11 +101,42 @@ namespace IST_LEAD.BusinessLogic.Sevices
             }) ;
 
             DataTable table = ds.Tables[0];
+
+            var res = new ResultModel
+            {
+                missings = false
+            };
+
+            for (int i = 0; i < table.Columns.Count; i++)
+            {
+                res.columns.Add(
+                    new Columns
+                    {
+                        title = table.Columns[i].Caption,
+                        Location = new Location
+                        {
+                            col = i,
+                            row = 0
+                        },
+                        
+                        Helpers = new List<string>(new []
+                        {
+                            table.Rows[0][i].ToString(),
+                            table.Rows[1][i].ToString()
+                        })
+                        
+                    }
+                );
+            }
             
-            string JSONString = JsonConvert.SerializeObject(table);
-            return JSONString;   
+            string JSONString = JsonConvert.SerializeObject(res);
             
+            fileStream.Close();
+            // File.Delete(path);
+            
+            return JSONString;
         }
+        // === === === === [END] === === === ===
         
     }
 }

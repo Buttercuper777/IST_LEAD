@@ -47,13 +47,13 @@ namespace IST_LEAD.LEAD_API.Controllers
                 var filePath = Entity.FilePath;
                 var fileName = Entity.FileName;
                 var excelHandler = new HandleExcelService(filePath, fileName);
-                excelHandler.HandleExcel();
+                var res = excelHandler.HandleExcel();
+                
+                return Content(res);
             }
             else
                 return BadRequest("No entry found with this id");
             
-            
-            return Ok();
         }
         
         

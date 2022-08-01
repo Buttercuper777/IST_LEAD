@@ -1,9 +1,12 @@
-﻿namespace IST_LEAD.Core.Models.ExcelHandlerModels
+﻿using System.Collections.Generic;
+
+namespace IST_LEAD.Core.Models.ExcelHandlerModels
 {
     public class Columns
     {
         public string title { get; set; }
-        public Location[] location { get; set; }
-        public Helpers[] Helpers { get; set; }
+        public Location Location { get; set; }
+        public List<string> Helpers { get; set; }
+        
     }
 }
