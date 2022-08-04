@@ -1,0 +1,65 @@
+.dropZone{
+    width: 100%;
+    height: 290px;
+    background: #6F62E2;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropZone a{
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    /* identical to box height */
+
+    text-decoration-line: underline;
+    transition: 0.3s;
+    color: #302B63;
+}
+
+.dropZone a:hover{
+    color: #fff;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.dropZone p{
+    color: #fff;
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    max-height: max-content;
+    padding: 0;
+    margin: 0;
+}
+.dropZone span{
+    color: #56E39A;
+    margin-right: 5px;
+}
+
+.dropImage{
+    width: 88px;
+    height: 88px;
+    margin-bottom: 30px;
+    transition: 0.3s;
+}
+
+.dropImage.active{
+    transform-origin: center;
+    transition: 0.3s;
+    transform: scale(110%);
+}
+.dropImage::before{
+    content:"";
+    display:block;
+    height:100%;
+    background-color: #fff;
+    -webkit-mask-image: url("../public/images/DragAndDrop.svg");
+    -webkit-mask-size: cover;
+}

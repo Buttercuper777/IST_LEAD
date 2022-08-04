@@ -29,7 +29,7 @@ return authStatus !== "authenticated" ? (
                     <img src="./images/log_out_icon.svg" style={{
                         marginBottom: 5 + "px"
                     }}/>
-                    LogOut
+                    Sign out
                 </button>
             </div>
         </>
