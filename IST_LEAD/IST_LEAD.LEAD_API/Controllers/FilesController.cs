@@ -34,19 +34,14 @@ namespace IST_LEAD.LEAD_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile newFile, CancellationToken cancellationToken)
+        public async Task<IActionResult> UploadFile([FromForm]FileForUpload newFile, CancellationToken cancellationToken)
         {
 
             if (newFile == null)
                 return BadRequest("Request must contain a file. Empty request");
-            
-            var fileForUpload = new FileForUpload
-            {
-                File = newFile,
-                FileFullName = newFile.FileName
-            };
 
-            var uploadedFile = _cloudinaryManager.UploadFile(fileForUpload);
+            
+            var uploadedFile = _cloudinaryManager.UploadFile(newFile);
 
             if (uploadedFile.UploadedResult)
             {
@@ -61,7 +56,7 @@ namespace IST_LEAD.LEAD_API.Controllers
                 var model = Mapper.Map<ExcelEntity>(uploadedFile);
 
                 var result = await _dbRepository.Add(model);
-                // await _dbRepository.SaveChangesAsync();
+                await _dbRepository.SaveChangesAsync();
 
                 return Ok(result);
             }

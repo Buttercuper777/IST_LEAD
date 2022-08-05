@@ -69,6 +69,7 @@ namespace IST_LEAD.LEAD_API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IST_LEAD.LEAD_API v1"));
             }
+            
 
             app.UseHttpsRedirection();
 
@@ -76,6 +77,10 @@ namespace IST_LEAD.LEAD_API
 
             app.UseAuthorization();
 
+            app.UseCors(
+                options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+            );
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
