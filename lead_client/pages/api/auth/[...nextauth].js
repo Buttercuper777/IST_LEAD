@@ -49,7 +49,7 @@ const options = {
         jwt: true
     },
     jwt:{
-        secret: JWT_Secret
+        secret: JWT_Secret,
     },
 
     callbacks: {
@@ -67,12 +67,13 @@ const options = {
 
 
         async session({session, token}){
-            session.user.accessToken = token.access_token;
+            session.user.accessToken = token.accessToken;
             session.user.refreshToken = token.refreshToken;
 
             return session;
         },
     },
+
     pages:{
         signIn: '/sign-in',
     }

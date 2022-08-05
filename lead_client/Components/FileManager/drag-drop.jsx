@@ -1,41 +1,27 @@
-import {useCallback, useReducer} from "react";
+import {useCallback, useReducer, useState} from "react";
 import {useDropzone} from "react-dropzone";
 import styles from "../../styles/drag-drop.module.css"
+import {TheFile, FileName} from "../../Boilers/uploadFile"
 
-export default function DragDropComponent(){
+export default function DragDropComponent({returnFile}){
 
-    // const LoadFile = "LoadFile"
-    //
-    // const[fileState, dispatch] = useReducer(reduser, {
-    //     fileLoad: false,
-    //     fileName: ""
-    // });
-    //
-    // // ACTION GENERATOR: LoadFile
-    // const LoadFileGenerator = (payload) => ({
-    //     type: LoadFile,
-    //     payload,
-    // });
-    //
-    // // LOADED FILE DATA
-    // function reduser(state, action){
-    //     switch(action.type){
-    //         case LoadFile:
-    //             return{
-    //                 fileLoad: true,
-    //                 fileName: action.payload
-    //             }
-    //     }
-    // }
 
     const onDrop = useCallback((acceptedFiles, rejectedFiles)=> {
-
 
         if(acceptedFiles && acceptedFiles.length > 0){
             const ex = acceptedFiles[0].name.split('.')[1];
 
             if(ex === 'xlsx'){
-                console.log(true + ex);
+
+                const formData = new FormData();
+                const baseData = acceptedFiles[0];
+                // formData.append('data', acceptedFiles[0]);
+
+                formData.append(TheFile, baseData);
+                formData.append(FileName, baseData.name);
+
+                returnFile(formData);
+
             }
             else{
                 alert("Доступны для обработки только Excel файлы (.xlsx)");
@@ -63,6 +49,7 @@ export default function DragDropComponent(){
 
     return (
         <>
+
             <div {...getRootProps()}>
                 <input {...getInputProps()} />
                     <div className={"def-btn-l" + " " + styles.dropZone}>
