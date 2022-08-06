@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import {useSession} from "next-auth/react";
 import styles from "../../styles/FilePage.module.css"
 import ModalMessage from "../../Components/Modal/ModalMessage";
+import {matchChooser} from "../../Components/FileManager/matchChooser";
 
 const LEAD_API = process.env.NEXT_PUBLIC_LEAD_API;
 
@@ -73,7 +74,7 @@ export default function FileMatcher({}){
     useEffect(()=>{
         if(FileId && session){
             getDirectusCollections(setAllDirectusCollections, setApiRespCode);
-            // getExcelColumns(FileId.id, setExcelColumns, setApiRespCode);
+            getExcelColumns(FileId.id, setExcelColumns, setApiRespCode);
 
         }
     },[FileId, session])
@@ -83,7 +84,7 @@ export default function FileMatcher({}){
             console.log("Directus errors: ", allDirectusCollections.errors[0]);
             setErrors(allDirectusCollections.errors[0]);
         }
-        // console.log(allDirectusCollections);
+        console.log(allDirectusCollections);
     },[allDirectusCollections])
 
     useEffect(()=>{
@@ -99,7 +100,9 @@ export default function FileMatcher({}){
 
     return PageErrors === null ? (
         <>
-
+            <div className={styles.chooseMatcherBlock}>
+                <matchChooser></matchChooser>
+            </div>
         </>
     ):
         (

@@ -1,0 +1,130 @@
+.customSelector {
+    position: relative;
+    width: 300px;
+    margin-right: 1rem;
+}
+
+.customSelector[open] {
+    z-index: 1;
+}
+
+.radios {
+    padding: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ddd;
+    list-style: none;
+}
+
+.radios::-webkit-details-marker {
+    display: none;
+}
+
+.customSelector[open] .radios:before {
+    content: '';
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.radios:after {
+    content: '';
+    display: inline-block;
+    float: right;
+    width: .5rem;
+    height: .5rem;
+    border-bottom: 1px solid currentColor;
+    border-left: 1px solid currentColor;
+    border-bottom-left-radius: 2px;
+    transform: rotate(45deg) translate(50%, 0%);
+    transform-origin: center center;
+    transition: transform ease-in-out 100ms
+}
+
+.radios:focus {
+    outline: none;
+}
+
+.customSelector[open] .radios:after {
+    transform: rotate(-45deg) translate(0%, 0%);
+}
+
+.list {
+    width: 100%;
+    background: #ddd;
+    position: absolute;
+    top: calc(100% + .5rem);
+    left: 0;
+    padding: 1rem;
+    margin: 0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.list li {
+    margin: 0;
+    padding: 1rem 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.list li:first-child {
+    padding-top: 0;
+}
+
+.list li:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+/* FAKE SELECT */
+
+.radios {
+    counter-reset: radios;
+}
+
+.radios:before {
+    content: var(--selection);
+}
+
+.customSelector input[type=radio] {
+    counter-increment: radios;
+    appearance: none;
+    display: none;
+}
+
+.customSelector input[type=radio]:checked {
+    display: inline;
+    --display: block;
+}
+
+.customSelector input[type=radio]:after {
+    content: attr(title);
+    display: inline;
+    font-size: 1rem;
+}
+
+.list {
+    counter-reset: labels;
+}
+
+.list label {
+    width: 100%;
+    display: flex;
+    cursor: pointer;
+    justify-content: space-between;
+}
+
+.list label span {
+    --display: none;
+    display: var(--display);
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #727272;
+    border-radius: 3px;
+}
