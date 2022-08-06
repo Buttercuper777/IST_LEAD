@@ -10,6 +10,7 @@ body {
   color: #EDEBFB;
 
   height: 100vh;
+
 }
 
 a {
@@ -22,6 +23,10 @@ a {
   box-sizing: border-box;
 }
 
+#__next{
+  height: 100%;
+
+}
 /*custom fonts*/
 
 @font-face {
@@ -103,7 +108,8 @@ a {
 
 
 .page-container{
-  max-height: calc(100vh - 68px);
+  min-height: calc(100vh - 68px);
+
   padding-top: 5vh;
 }
 

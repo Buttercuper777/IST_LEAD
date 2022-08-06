@@ -6,7 +6,6 @@ import UploadedFile from "../../Components/FileManager/UploadedFile";
 import sendFile from "../../helpers/sendFileHelper";
 import {GuidCheck} from "../../helpers/GuidCheck";
 
-import UploadedResult from "../../Components/FileManager/UploadedResult";
 
 export default function Index(){
 
@@ -47,29 +46,29 @@ export default function Index(){
 
             {/*<button onClick={()=>{setNewFileId(!newFileId)}}></button>*/}
             <div className={"row"}>
-                <div className={"page-container"}>
-                    <div className={"col-lg-6"}>
-                        <h1 className={"PageCaption"}>Менеджер продуктов</h1>
-                        <p className={"PageSubTitle"}>“Перетащите” нужный файл на эту страницу или
-                            найдите его на вашем компьютере, нажав на надпись
-                            “Загрузить файл”</p>
-                        <div className={styles.DragDropBlock}>
-                            <DragDropComponent returnFile={satFile}/>
-                        </div>
-                        <div className={styles.FileForSendBlock}>
 
-                            <UploadedFile
-                                name={file ? file.get(FileName) : null}
-                                file={file ? file.get(TheFile) : null}
-                                sendFnc={fileSender}
-                                // isVisible={file ? true: false}
-                                isVisible={true}
-                                savedData={savedFile}
-                            />
+                <div className={"col-lg-6"}>
+                    <h1 className={"PageCaption"}>Менеджер продуктов</h1>
+                    <p className={"PageSubTitle"}>“Перетащите” нужный файл на эту страницу или
+                        найдите его на вашем компьютере, нажав на надпись
+                        “Загрузить файл”</p>
+                    <div className={styles.DragDropBlock}>
+                        <DragDropComponent returnFile={satFile}/>
+                    </div>
+                    <div className={styles.FileForSendBlock}>
 
-                        </div>
+                        <UploadedFile
+                            name={file ? file.get(FileName) : null}
+                            file={file ? file.get(TheFile) : null}
+                            sendFnc={fileSender}
+                            isVisible={file ? true: false}
+                            // isVisible={true}
+                            savedData={savedFile}
+                        />
+
                     </div>
                 </div>
+
             </div>
         </>
     )

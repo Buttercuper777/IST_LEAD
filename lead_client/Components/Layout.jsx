@@ -20,7 +20,9 @@ export default function Layout({ children }) {
             <MainHeader/>
                 <main>
                     <div className={"container"}>
-                        {children}
+                        <div className={"page-container"}>
+                            {children}
+                        </div>
                     </div>
                 </main>
 
