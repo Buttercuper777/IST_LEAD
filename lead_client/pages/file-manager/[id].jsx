@@ -1,12 +1,14 @@
 import {useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {useSession} from "next-auth/react";
-import styles from "../../styles/FilePage.module.css"
 import ModalMessage from "../../Components/Modal/ModalMessage";
-import {matchChooser} from "../../Components/FileManager/matchChooser";
+import MatcherComp from "../../Components/FileManager/MatcherComp";
+
+import styles from "../../styles/FilePage.module.css"
+import {Matcher_AddFileId} from "../../helpers/ModelMathcer";
 
 const LEAD_API = process.env.NEXT_PUBLIC_LEAD_API;
-
+const Directus_API = process.env.NEXT_PUBLIC_DIRECTUS_API;
 
 export default function FileMatcher({}){
 
@@ -23,6 +25,11 @@ export default function FileMatcher({}){
         required: true
     });
 
+    useEffect(()=>{
+        if(FileId && FileId !== null)
+            Matcher_AddFileId(FileId.id);
+    },[FileId])
+
     const getDirectusCollections = async(setter, statusSetter) => {
         const requestOptions = {
             method: 'GET',
@@ -32,7 +39,7 @@ export default function FileMatcher({}){
             }
         };
 
-        const result = await fetch("https://admin.istlift.com/collections",
+        const result = await fetch(Directus_API + "/fields/Products",
                                         requestOptions
         )
             .then(res=> {
@@ -53,17 +60,22 @@ export default function FileMatcher({}){
             }
         };
 
-        const result = await fetch(LEAD_API + "/api/Excel/HandleExcel?id=" + id,
-            requestOptions
-        )
-            .then(res=> {
-                statusSetter(res.status);
-                return res;
-            })
-            .then(res => res.json())
-            .then(res => {
-                setter(res);
-            });
+        try {
+            const result = await fetch(LEAD_API + "/api/Excel/HandleExcel?id=" + id,
+                requestOptions
+            )
+                .then(res => {
+                    statusSetter(res.status);
+                    return res;
+                })
+                .then(res => res.json())
+                .then(res => {
+                    setter(res);
+                });
+        }catch(ex){
+            statusSetter(ex.message);
+            setter(ex);
+        }
     }
 
     useEffect(()=>{
@@ -88,20 +100,29 @@ export default function FileMatcher({}){
     },[allDirectusCollections])
 
     useEffect(()=>{
-        if(excelColumns && excelColumns.errors){
-            console.log("Excel errors: ", excelColumns.errors[0]);
-            setErrors(excelColumns.errors[0]);
+        if(excelColumns && excelColumns.name === "TypeError"){
+            setErrors({message: excelColumns.message + ' \n ' + excelColumns.stack});
         }
         if(excelColumns){
             console.log(excelColumns);
         }
-        // console.log(allDirectusCollections);
     },[excelColumns])
 
-    return PageErrors === null ? (
+    return (PageErrors === null) ? (
         <>
             <div className={styles.chooseMatcherBlock}>
-                <matchChooser></matchChooser>
+                {PageErrors === null
+                && excelColumns
+                && excelColumns.name !== "TypeError" ?
+
+                    excelColumns.columns.map((el, i) => (
+                    <MatcherComp title={el.title}
+                                 helpers={el.Helpers}
+                                 collection={allDirectusCollections}
+                                 location={el.Location}
+                                 key={el.title}/>
+                    )
+                ): null}
             </div>
         </>
     ):

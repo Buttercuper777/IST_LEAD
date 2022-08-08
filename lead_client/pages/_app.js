@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps:{session, ...pageProps} }) {
           <Layout>
             <Component {...pageProps} />
           </Layout>
-          {/*<LogOutBtn/>*/}
+          <LogOutBtn/>
       </SessionProvider>
       </>
   )

@@ -5,14 +5,17 @@ import {TheFile,FileName} from "../../Boilers/uploadFile";
 import UploadedFile from "../../Components/FileManager/UploadedFile";
 import sendFile from "../../helpers/sendFileHelper";
 import {GuidCheck} from "../../helpers/GuidCheck";
+import {useRouter} from "next/router";
 
 
 export default function Index(){
 
     const[file, satFile] = useState(null);
     const[loadedFileVisible, setLoadedVisible] = useState(false);
-    const[newFileId, setNewFileId] = useState(null);
+    const[newFileId, setNewFileId] = useState("");
     const[savedFile, setSavedFile] = useState(null);
+
+    const router = useRouter();
 
     useEffect(()=> {
         if(file && file !== null){
@@ -33,13 +36,12 @@ export default function Index(){
 
     }
 
-    // useEffect(()=>{
-    //         fetch("https://localhost:5001/api/Excel/GetJsonModel?id=3d406179-4ab9-49fa-b854-ca6de7f5f3fb").then(
-    //             res => res.json().then(res => console.log(res))
-    //         )
-    //     if(GuidCheck.test(newFileId)){
-    //     }
-    // },[newFileId])
+    useEffect(()=>{
+        if(newFileId && newFileId.length > 0){
+            console.log(newFileId);
+            router.push("/file-manager/" + newFileId);
+        }
+    },[newFileId])
 
     return(
         <>

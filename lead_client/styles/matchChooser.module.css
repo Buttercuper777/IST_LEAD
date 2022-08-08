@@ -1,130 +1,149 @@
-.customSelector {
+.customDropdown {
     position: relative;
-    width: 300px;
-    margin-right: 1rem;
-}
-
-.customSelector[open] {
-    z-index: 1;
-}
-
-.radios {
-    padding: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: #ddd;
-    list-style: none;
-}
-
-.radios::-webkit-details-marker {
-    display: none;
-}
-
-.customSelector[open] .radios:before {
-    content: '';
-    display: block;
-    width: 100vw;
-    height: 100vh;
-    background: transparent;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-.radios:after {
-    content: '';
     display: inline-block;
-    float: right;
-    width: .5rem;
-    height: .5rem;
-    border-bottom: 1px solid currentColor;
-    border-left: 1px solid currentColor;
-    border-bottom-left-radius: 2px;
-    transform: rotate(45deg) translate(50%, 0%);
-    transform-origin: center center;
-    transition: transform ease-in-out 100ms
+    vertical-align: middle;
+    border-radius: 3px;
+    max-width: 100%;
 }
 
-.radios:focus {
+.customDropdown select {
+    cursor: pointer;
+    background: #6F62E2;
+
+    border-radius: 10px;
+    padding: 15px;
+
+    color: #fff;
+    font-size: inherit;
+
+    padding-right: 2.5em;
+
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+
+    border: none;
+    max-width: 100%;
+
+}
+
+
+.customDropdown::before,
+.customDropdown::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.customDropdown::after { /*  Custom dropdown arrow */
+    content: "\25BC";
+    height: 1em;
+    font-size: .625em;
+    line-height: 1;
+    right: 1.2em;
+    top: 50%;
+    margin-top: -.5em;
+}
+
+.customDropdown::before { /*  Custom dropdown arrow cover */
+    width: 2em;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0 3px 3px 0;
+}
+
+.customDropdown select:focus{
+    border: none;
     outline: none;
 }
 
-.customSelector[open] .radios:after {
-    transform: rotate(-45deg) translate(0%, 0%);
+.customDropdown select{
+    cursor: pointer;
 }
 
-.list {
-    width: 100%;
-    background: #ddd;
-    position: absolute;
-    top: calc(100% + .5rem);
-    left: 0;
-    padding: 1rem;
-    margin: 0;
-    box-sizing: border-box;
-    border-radius: 5px;
-    max-height: 200px;
-    overflow-y: auto;
+
+.customDropdown select[disabled] {
+    color: rgba(0,0,0,.3);
+
 }
 
-.list li {
-    margin: 0;
-    padding: 1rem 0;
-    border-bottom: 1px solid #ccc;
+.customDropdown select[disabled]::after {
+    color: rgba(0,0,0,.1);
 }
 
-.list li:first-child {
-    padding-top: 0;
+.customDropdown::before {
+    background-color: rgba(0,0,0,.15);
 }
 
-.list li:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
+.customDropdown::after {
+    color: rgba(0,0,0,.4);
 }
 
-/* FAKE SELECT */
 
-.radios {
-    counter-reset: radios;
+.matcherBlock{
+    margin: 25px;
+    max-width: 20%;
 }
 
-.radios:before {
-    content: var(--selection);
-}
-
-.customSelector input[type=radio] {
-    counter-increment: radios;
-    appearance: none;
+.matcherBlock.active{
     display: none;
 }
 
-.customSelector input[type=radio]:checked {
-    display: inline;
-    --display: block;
+.matcherTitle{
+    margin: 5px 0px;
+    font-size: 22px;
+    font-family: Ubuntu;
+    font-weight: 500;
+}
+.helpersTitle{
+    margin: 0px;
+    margin-bottom: 5px !important;
+    font-size: 16px;
+    font-family: Ubuntu;
+    font-weight: 400;
+    color: #B4D4FF;
+}
+.helpersList{
+    margin: 0px;
+    margin-bottom: 10px !important;
+    padding: 0px;
+}
+.helpersList li{
+    padding-left: 5px;
+    margin-left: 20px;
+}
+.helpersList li a{
+    word-wrap: break-word;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+
 }
 
-.customSelector input[type=radio]:after {
-    content: attr(title);
-    display: inline;
-    font-size: 1rem;
-}
+@media screen and (-webkit-min-device-pixel-ratio:0) {  /*safari and chrome*/
+    .customDropdown select {
 
-.list {
-    counter-reset: labels;
+    }
 }
-
-.list label {
-    width: 100%;
-    display: flex;
-    cursor: pointer;
-    justify-content: space-between;
+.customDropdown select::-moz-focus-inner { /*Remove button padding in FF*/
+    border: 0;
+    padding: 0;
 }
-
-.list label span {
-    --display: none;
-    display: var(--display);
-    width: 1rem;
-    height: 1rem;
-    border: 1px solid #727272;
-    border-radius: 3px;
+@-moz-document url-prefix() { /* targets Firefox only */
+    .customDropdown select {
+        padding: 15px 0!important;
+    }
+}
+@media screen\0 { /* IE Hacks: targets IE 8, 9 and 10 */
+    .customDropdown select {
+        height:30px;
+        line-height:30px;
+    }
 }

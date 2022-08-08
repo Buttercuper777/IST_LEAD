@@ -1,4 +1,4 @@
-const DirectusAPI = process.env.DIRECTUS_API
+const DirectusAPI = process.env.NEXT_PUBLIC_DIRECTUS_API
 const JWT_Secret = process.env.JWT_SECRET
 
 import NextAuth from "next-auth";

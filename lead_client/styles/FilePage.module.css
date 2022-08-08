@@ -1,5 +1,10 @@
 .chooseMatcherBlock{
     width: 100%;
     min-height: 200px;
-    border: solid 1px #fff;
+    /*border: solid 1px #fff;*/
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 }
