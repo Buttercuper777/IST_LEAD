@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using IST_LEAD.BusinessLogic.Sevices;
 using IST_LEAD.DAL.Entities;
 using IST_LEAD.DAL.Repository;
+using IST_LEAD.Integrations.Directus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -54,6 +55,17 @@ namespace IST_LEAD.LEAD_API.Controllers
             else
                 return BadRequest("No entry found with this id");
             
+        }
+
+        [HttpGet]
+        [Route("Try")]
+        public async Task<IActionResult> Try()
+        {
+            var directus = new DirectusProvider("TOKEN");
+
+            var resp = await directus.relations.GetRelations();
+
+            return null;
         }
         
         

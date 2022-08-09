@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GenerateRuntimeConfigurationFiles>True</GenerateRuntimeConfigurationFiles>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
     <ProjectReference Include="..\IST_LEAD.BusinessLogic\IST_LEAD.BusinessLogic.csproj" />
     <ProjectReference Include="..\IST_LEAD.DAL.PostgreSQL\IST_LEAD.DAL.PostgreSQL.csproj" />
     <ProjectReference Include="..\IST_LEAD.Integrations.Cloudinary\IST_LEAD.Integrations.Cloudinary.csproj" />
+    <ProjectReference Include="..\IST_LEAD.Integrations.Directus\IST_LEAD.Integrations.Directus.csproj" />
   </ItemGroup>
 
 </Project>
