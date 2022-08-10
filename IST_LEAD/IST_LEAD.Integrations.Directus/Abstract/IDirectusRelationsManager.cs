@@ -4,9 +4,9 @@ namespace IST_LEAD.Integrations.Directus.Abstract;
 
 public interface IDirectusRelationsManager
 {
-    public Task<List<RelationsObject>> GetRelations();
-    public List<RelationsObject> GetRelations(string collection);
+    public Task<RelationsObject> GetRelations();
+    public Task<RelationsObject> GetRelations(string collection);
         
-    public List<RelationsObject> FindRelationCollection(string collection);
-    public string GetRelatedCollection(RelationsObject withRelatedCollection, RelationsObject withRelatedField);
+    public Task<OneRelationObject> FindRelationWithField(string field);
+    public string GetRelatedCollection(RelationsObject relations, string relationItem);
 }

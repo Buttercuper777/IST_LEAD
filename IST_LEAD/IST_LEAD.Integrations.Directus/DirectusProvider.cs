@@ -8,12 +8,12 @@ public class DirectusProvider
 {
     private string AccessToken { get; }
 
-    public Relations relations { get; set; }
+    public Relations Relations { get; set; }
 
     public DirectusProvider(string accessToken)
     {
         this.AccessToken = accessToken;
-        this.relations = new Relations(accessToken, "https://admin.istlift.com");
+        this.Relations = new Relations(accessToken, "https://admin.istlift.com");
     }
     
     

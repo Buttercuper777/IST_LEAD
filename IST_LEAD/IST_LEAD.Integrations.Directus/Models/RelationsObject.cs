@@ -1,20 +1,19 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
-namespace IST_LEAD.Integrations.Directus.Models
+namespace IST_LEAD.Integrations.Directus.Models;
+
+public class RelationsObject
 {
-    public class RelationsObject
+    public RelationsObject()
     {
-        [JsonPropertyName("collection")]
-        public string Collection { get; set; }
-        [JsonPropertyName("related_collection")]
-        public string RelatedCollection { get; set; }
-        public Meta meta {get; set; }
-        
+        Relations = new List<OneRelationObject>();
     }
 
-    public class Meta
+    public void AddRelation(OneRelationObject relation)
     {
-        [JsonPropertyName("one_field")]
-        public string OneField { get; set; }
-    }
+        Relations.Add(relation);
+    }    
+    
+    [JsonProperty("data")]
+    public List<OneRelationObject> Relations { get; set; } = null!;
 }

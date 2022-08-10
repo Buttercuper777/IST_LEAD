@@ -5,6 +5,7 @@ using IST_LEAD.BusinessLogic.Sevices;
 using IST_LEAD.DAL.Entities;
 using IST_LEAD.DAL.Repository;
 using IST_LEAD.Integrations.Directus;
+using IST_LEAD.Integrations.Directus.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -57,16 +58,26 @@ namespace IST_LEAD.LEAD_API.Controllers
             
         }
 
-        [HttpGet]
-        [Route("Try")]
-        public async Task<IActionResult> Try()
-        {
-            var directus = new DirectusProvider("TOKEN");
-
-            var resp = await directus.relations.GetRelations();
-
-            return null;
-        }
+        // [HttpGet]
+        // [Route("Try")]
+        // public async Task<IActionResult> Try(string field)
+        // {
+        //     var directus = new DirectusProvider("TOKEN");
+        //     
+        //     var FieldCollection = await directus.Relations.FindRelationWithField(field);
+        //     var Relations = await directus.Relations.GetRelations(FieldCollection.Collection);
+        //     
+        //     var res = directus.Relations.GetRelatedCollection(Relations, field);
+        //     
+        //     if (res != null)
+        //     {
+        //         // var JsonResp = JsonConvert.SerializeObject(Relations);
+        //         return Ok(res);
+        //     }
+        //     
+        //     return BadRequest(res);
+        //     
+        // }
         
         
     }

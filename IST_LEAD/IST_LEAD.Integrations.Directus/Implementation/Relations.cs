@@ -9,30 +9,32 @@ public class Relations : IDirectusRelationsManager
 {
     private string AccessToket { get; }
     private string BaseUrl { get;  }
-    
-    private string _relationsPath = "/relations/";
-    
-    public Relations(string accessToken, string baseUrl)
+    private string RealtionsPath { get; set; } 
+
+    public Relations(string accessToken, string baseUrl, string realtionsPath= "/relations/")
     {
         this.AccessToket = accessToken;
         this.BaseUrl = baseUrl;
+        this.RealtionsPath = realtionsPath;
     }
     
-    public async Task<List<RelationsObject>> GetRelations()
+    public async Task<RelationsObject> GetRelations()
     {
+        var Relations = new RelationsObject();
+        
         try
         {
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToket);
-                using (HttpResponseMessage res = await client.GetAsync(BaseUrl + _relationsPath))
+                using (HttpResponseMessage res = await client.GetAsync(BaseUrl + RealtionsPath))
                 {
                     using (HttpContent content = res.Content)
                     {
                         string data = await content.ReadAsStringAsync();
                         if (data != null)
                         {
-                            
+                            Relations = JsonConvert.DeserializeObject<RelationsObject>(data);
                         }
                     }
                 }
@@ -40,26 +42,101 @@ public class Relations : IDirectusRelationsManager
         }
         catch
         {
-            throw new Exception();
+            Relations = null;
         }
 
+        return Relations;
+    }
+
+    public async Task<RelationsObject> GetRelations(string collection)
+    {
+         var Relations = new RelationsObject();
+                
+                try
+                {
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToket);
+                        using (HttpResponseMessage res = await client.GetAsync(BaseUrl + RealtionsPath + collection))
+                        {
+                            using (HttpContent content = res.Content)
+                            {
+                                string data = await content.ReadAsStringAsync();
+                                if (data != null)
+                                {
+                                    Relations = JsonConvert.DeserializeObject<RelationsObject>(data);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    Relations = null;
+                }
         
-        var resp = new List<RelationsObject>();
-        return resp;
+                return Relations;
     }
 
-    public List<RelationsObject> GetRelations(string collection)
+    public async Task<OneRelationObject> FindRelationWithField(string field)
     {
-        throw new NotImplementedException();
+        var AllRelations = new RelationsObject();
+        var RelationsWithField = new OneRelationObject();
+        
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToket);
+                using (HttpResponseMessage res = await client.GetAsync(BaseUrl + RealtionsPath))
+                {
+                    using (HttpContent content = res.Content)
+                    {
+                        string data = await content.ReadAsStringAsync();
+                        if (data != null)
+                        {
+                            AllRelations = JsonConvert.DeserializeObject<RelationsObject>(data);
+                            foreach (var relation in AllRelations.Relations)
+                            {
+                                if (relation.meta.OneField == field)
+                                {
+                                    RelationsWithField = relation;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            RelationsWithField = null;
+        }
+        
+        return RelationsWithField;
     }
 
-    public List<RelationsObject> FindRelationCollection(string collection)
+    public string GetRelatedCollection(RelationsObject relations, string relatedItem)
     {
-        throw new NotImplementedException();
-    }
 
-    public string GetRelatedCollection(RelationsObject withRelatedCollection, RelationsObject withRelatedField)
-    {
-        throw new NotImplementedException();
+        var OneOfRelations = new OneRelationObject();
+        
+        if (relations.Relations.Count == 2)
+        {
+            foreach (var relation in relations.Relations)
+            {
+                if ((relation.meta.OneField == null ||
+                     relation.meta.OneField != relatedItem))
+                {
+                    OneOfRelations = relation;
+                }
+                else continue;
+            }
+
+            return OneOfRelations.RelatedCollection;
+
+        }
+
+        return null;
     }
 }
