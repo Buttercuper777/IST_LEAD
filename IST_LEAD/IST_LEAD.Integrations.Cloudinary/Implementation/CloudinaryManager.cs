@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using IST_LEAD.BusinessLogic.Sevices;
+using IST_LEAD.Core.Abstract;
 
 namespace IST_LEAD.Integrations.Cloudinary.Implementation
 {

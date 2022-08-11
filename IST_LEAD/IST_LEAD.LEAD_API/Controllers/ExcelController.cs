@@ -58,26 +58,26 @@ namespace IST_LEAD.LEAD_API.Controllers
             
         }
 
-        // [HttpGet]
-        // [Route("Try")]
-        // public async Task<IActionResult> Try(string field)
-        // {
-        //     var directus = new DirectusProvider("TOKEN");
-        //     
-        //     var FieldCollection = await directus.Relations.FindRelationWithField(field);
-        //     var Relations = await directus.Relations.GetRelations(FieldCollection.Collection);
-        //     
-        //     var res = directus.Relations.GetRelatedCollection(Relations, field);
-        //     
-        //     if (res != null)
-        //     {
-        //         // var JsonResp = JsonConvert.SerializeObject(Relations);
-        //         return Ok(res);
-        //     }
-        //     
-        //     return BadRequest(res);
-        //     
-        // }
+        [HttpGet]
+        [Route("Try")]
+        public async Task<IActionResult> Try(string collection)
+        {
+            var Directus = new DirectusProvider("YjE3ZmE0OWUtNTFhMC00YmJlLTllOGItNjE4NzBhY2JkYjAz");
+            
+            var Items = await Directus.Items.GetItems(collection);
+            // var Relations = await directus.Relations.GetRelations(FieldCollection.Collection);
+            
+            // var res = directus.Relations.GetRelatedCollection(Relations, field);
+            
+            if (Items != null)
+            {
+                // var JsonResp = JsonConvert.SerializeObject(Relations);
+                return Ok(Items);
+            }
+            
+            return BadRequest(Items);
+            
+        }
         
         
     }

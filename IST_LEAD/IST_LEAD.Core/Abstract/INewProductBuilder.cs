@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IST_LEAD.Core
+namespace IST_LEAD.Core.Abstract
 {
     public interface INewProductBuilder
     {

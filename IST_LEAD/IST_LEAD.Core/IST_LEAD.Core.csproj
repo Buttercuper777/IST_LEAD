@@ -10,20 +10,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Abstract\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Abstract\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Abstract\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Integrations\Directus" />
-  </ItemGroup>
-
 </Project>

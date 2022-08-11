@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using IST_LEAD.Core.Abstract;
 using IST_LEAD.LEAD_API.Common.Mapping;
 
 

@@ -1,12 +1,8 @@
-﻿using IST_LEAD.Core.Models;
+﻿using System.Threading.Tasks;
+using IST_LEAD.Core.Models;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IST_LEAD.Core
+namespace IST_LEAD.Core.Abstract
 {
     public interface IFileManager
     {

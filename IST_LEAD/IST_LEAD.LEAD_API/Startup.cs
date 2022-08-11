@@ -1,6 +1,7 @@
 using dotenv.net.Utilities;
 using IST_LEAD.BusinessLogic.Sevices;
 using IST_LEAD.Core;
+using IST_LEAD.Core.Abstract;
 using IST_LEAD.DAL;
 using IST_LEAD.Integrations.Cloudinary;
 using IST_LEAD.Integrations.Cloudinary.Implementation;

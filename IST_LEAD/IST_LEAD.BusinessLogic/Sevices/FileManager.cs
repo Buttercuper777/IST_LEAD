@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IST_LEAD.Core;
+using IST_LEAD.Core.Abstract;
 using IST_LEAD.Core.Models;
 
 using Microsoft.AspNetCore.Http;
