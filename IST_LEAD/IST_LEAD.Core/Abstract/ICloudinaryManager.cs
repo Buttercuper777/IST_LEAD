@@ -7,5 +7,7 @@ namespace IST_LEAD.Core.Abstract
         UploadedFile UploadFile(FileForUpload newFile);
         bool DeleteFile(string pulicId);
 
+        string GetFilesFromFolder(string folder, int maxFileNum);
+
     }
 }

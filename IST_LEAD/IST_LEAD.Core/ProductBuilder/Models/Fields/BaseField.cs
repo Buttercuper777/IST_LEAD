@@ -1,8 +1,11 @@
-﻿namespace IST_LEAD.Core.ProductBuilder.Models.Fields;
+﻿using System.Reflection;
+using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
+
+namespace IST_LEAD.Core.ProductBuilder.Models.Fields;
 
 public abstract class BaseField
 {
-    private string Field { get; set; }
+    protected abstract string Field { get; set; }
 
     internal BaseField(string field)
     {

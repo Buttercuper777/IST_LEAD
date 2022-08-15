@@ -91,5 +91,18 @@ namespace IST_LEAD.Integrations.Cloudinary.Implementation
             return true;
         }
 
+        
+        public string GetFilesFromFolder(string folder, int maxFileNum)
+        {
+            SearchResult searchRes = _cloudinary.Search()
+                .Expression(folder).
+                SortBy("public_id", "desc")
+                .MaxResults(maxFileNum).Execute();
+
+            return searchRes.JsonObj.ToString();
+        }
+
+        
+
     }
 }

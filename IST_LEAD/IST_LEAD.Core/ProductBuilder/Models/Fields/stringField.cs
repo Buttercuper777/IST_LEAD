@@ -1,7 +1,15 @@
-﻿namespace IST_LEAD.Core.ProductBuilder.Models.Fields;
+﻿using System.Reflection;
+
+namespace IST_LEAD.Core.ProductBuilder.Models.Fields;
 
 public class stringField : BaseField
 {
-    public stringField(string value) : base(value) { }
+    protected override string Field { get; set; }
+    // internal string sField { get; set; }
+
+    public stringField(string value) : base(value)
+    {
+        // sField = value;
+    }
     
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using IST_LEAD.Core.Models.Common;
 
 namespace IST_LEAD.Core.Models.ExcelHandlerModels
 {

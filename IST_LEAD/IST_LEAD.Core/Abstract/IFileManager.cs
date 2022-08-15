@@ -7,7 +7,7 @@ namespace IST_LEAD.Core.Abstract
     public interface IFileManager
     {
 
-        public Task<FileEntity> WriteFile(IFormFile file);
+        public Task<bool> GetFileByPath(string saveFilePath, string BasefilePath);
         public string GetFormat(IFormFile file);
         public string Base64Encode(string plainText);
         public string Base64Decode(string EncodedText);

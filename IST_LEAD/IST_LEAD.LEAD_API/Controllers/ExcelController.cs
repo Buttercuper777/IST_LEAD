@@ -49,7 +49,7 @@ namespace IST_LEAD.LEAD_API.Controllers
                 var filePath = Entity.FilePath;
                 var fileName = Entity.FileName;
                 var excelHandler = new HandleExcelService(filePath, fileName);
-                var res = excelHandler.HandleExcel();
+                var res = excelHandler.GetAllExcelColumns();
                 
                 return Content(res);
             }
@@ -57,25 +57,30 @@ namespace IST_LEAD.LEAD_API.Controllers
                 return BadRequest("No entry found with this id");
             
         }
-
+        
         [HttpGet]
         [Route("Try")]
         public async Task<IActionResult> Try(string collection)
         {
             var Directus = new DirectusProvider("YjE3ZmE0OWUtNTFhMC00YmJlLTllOGItNjE4NzBhY2JkYjAz");
             
-            var Items = await Directus.Items.GetItems(collection);
-            // var Relations = await directus.Relations.GetRelations(FieldCollection.Collection);
+            var Relations = await Directus.Relations.GetRelations();
+            var rWF = Directus.Relations.FindRelationWithField(collection);
+            var b = rWF.Result;
             
-            // var res = directus.Relations.GetRelatedCollection(Relations, field);
+            var targetRelations = await Directus.Relations.GetRelations(b.Collection);
             
+            
+            var final_relation = Directus.Relations.GetRelatedCollection(targetRelations, collection);
+            var Items = await Directus.Items.GetItems(final_relation);
+      
             if (Items != null)
             {
                 // var JsonResp = JsonConvert.SerializeObject(Relations);
                 return Ok(Items);
             }
             
-            return BadRequest(Items);
+            return BadRequest();
             
         }
         

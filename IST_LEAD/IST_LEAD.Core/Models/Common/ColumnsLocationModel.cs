@@ -1,4 +1,4 @@
-﻿namespace IST_LEAD.Core.Models.ExcelHandlerModels
+﻿namespace IST_LEAD.Core.Models.Common
 {
     public class Location
     {

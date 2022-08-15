@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 using ExcelDataReader;
 using Newtonsoft.Json;
 using IST_LEAD.Core;
+using IST_LEAD.Core.Models.Common;
 using IST_LEAD.Core.Models.ExcelHandlerModels;
+using IST_LEAD.Core.Models.ExcelMatchingModels;
 
 namespace IST_LEAD.BusinessLogic.Sevices
 {
@@ -19,9 +21,9 @@ namespace IST_LEAD.BusinessLogic.Sevices
     {
         private static string baseDirectory = @"..\";
         private static string pathString = System.IO.Path.Combine(baseDirectory, "LocalStorage");
-        
-        private static string FileUrl { get; set; }
-        private static string FileName { get; set; }
+
+        private static string FileUrl { get; set; } = "";
+        private static string FileName { get; set; } = "";
         
 
         public HandleExcelService(string filePath, string fileName)
@@ -29,9 +31,10 @@ namespace IST_LEAD.BusinessLogic.Sevices
             FileUrl = filePath;
             FileName = fileName;
         }
+
         
-        // === === === Point of entry === === ===
-        public string HandleExcel()
+        // GetAllExcelColumns
+        public string GetAllExcelColumns()
         {
             var fileManager = new FileManager();
             
@@ -41,11 +44,11 @@ namespace IST_LEAD.BusinessLogic.Sevices
                     fileManager.Base64Encode(FileName));
                 
                 
-                bool dlResult = GetFileByPath(fileString);
+                var dlResult = fileManager.GetFileByPath(fileString, FileUrl);
 
-                if(dlResult)
+                if(dlResult.Result)
                 {
-                    var res = OpenExelFile(fileString);
+                    var res = GetColumnsLocations(fileString);
                     return res;
                 }
                 else
@@ -54,38 +57,9 @@ namespace IST_LEAD.BusinessLogic.Sevices
                 }
             
         }
-        // === === === === [END] === === === ===
         
         
-
-        // === === === Download File === === ===
-        private bool GetFileByPath(string newFilePath)
-        {
-            if(!File.Exists(newFilePath))
-            {
-                using(WebClient webClient = new WebClient()){
-                    try
-                    {
-                        webClient.DownloadFileTaskAsync(new Uri(FileUrl), newFilePath).Wait();
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
-        // === === === === [END] === === === ===
-        
-        
-        
-        // === === Open Excel -> Get Columns === ===
-        private string OpenExelFile(string path)
+        private string GetColumnsLocations(string path)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             
@@ -132,11 +106,95 @@ namespace IST_LEAD.BusinessLogic.Sevices
             string JSONString = JsonConvert.SerializeObject(res);
             
             fileStream.Close();
-            // File.Delete(path);
+            File.Delete(path);
             
             return JSONString;
         }
-        // === === === === [END] === === === ===
+
+
+        public ExcelColumnsList GetColumnValues(Location location, ExcelColumnsList excelColumnsList)
+        {
+            
+            var fileManager = new FileManager();
+            
+            var fileString = System.IO.Path.Combine(pathString,
+                fileManager.Base64Encode(FileName));
+
+            var GetFileRes = fileManager.GetFileByPath(fileString, FileUrl);
+
+            if (!GetFileRes.Result)
+                return null;
+            
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            
+            FileStream fileStream = File.Open(fileString, FileMode.Open, FileAccess.Read);
+            IExcelDataReader reader = ExcelReaderFactory.CreateReader(fileStream);
+
+            DataSet ds = reader.AsDataSet(new ExcelDataSetConfiguration()
+            {
+                ConfigureDataTable = (x) => new ExcelDataTableConfiguration()
+                {
+                    UseHeaderRow = true,
+                }
+            }) ;
+
+            DataTable table = ds.Tables[0];
+
+            if (excelColumnsList != null)
+            {
+                var columnValues = excelColumnsList;
+
+                for (int i = 0; i < table.Rows.Count; i++)
+                {
+                    columnValues.Values.Add(
+                        table.Rows[i][location.col].ToString()
+                    );
+                }
+                
+                fileStream.Close();
+                return columnValues;
+            }
+            fileStream.Close();
+            return null;
+            
+        }
+
+        public void ExcelDelete()
+        {
+            var fileManager = new FileManager();
+            var fileString = System.IO.Path.Combine(pathString,
+                fileManager.Base64Encode(FileName));
+            
+            File.Delete(fileString);
+        }
+
+        public int GetNumOfExcelRows()
+        {
+            var fileManager = new FileManager();
+            var fileString = System.IO.Path.Combine(pathString,
+                fileManager.Base64Encode(FileName));
+            
+            FileStream fileStream = File.Open(fileString, FileMode.Open, FileAccess.Read);
+            IExcelDataReader reader = ExcelReaderFactory.CreateReader(fileStream);
+
+            DataSet ds = reader.AsDataSet(new ExcelDataSetConfiguration()
+            {
+                ConfigureDataTable = (x) => new ExcelDataTableConfiguration()
+                {
+                    UseHeaderRow = true,
+                }
+            }) ;
+            
+            DataTable table = ds.Tables[0];
+
+            int RowsVal = 0;
+            RowsVal = table.Rows.Count;
+            fileStream.Close();
+
+            return RowsVal;
+        }
+        
+        
         
     }
 }

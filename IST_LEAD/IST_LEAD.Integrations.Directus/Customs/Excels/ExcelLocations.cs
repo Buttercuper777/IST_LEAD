@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
-namespace IST_LEAD.Integrations.Directus.Models.Customs;
+namespace IST_LEAD.Integrations.Directus.Customs.Excels;
 
 public class ExcelLocations
 {
@@ -11,6 +12,7 @@ public class ExcelLocations
 public class Field
 {
     [JsonProperty("field_name")]
+    [JsonPropertyName("field_name")]
     public string FieldName { get; set; }
     public Location location { get; set; }
 

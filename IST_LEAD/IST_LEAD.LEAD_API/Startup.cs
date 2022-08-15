@@ -17,6 +17,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Npgsql;
 using IST_LEAD.DAL.Repository;
+using IST_LEAD.Integrations.Directus;
+using IST_LEAD.Integrations.Directus.Externals.Abstract;
+using IST_LEAD.Integrations.Directus.Externals.Implementation;
 
 namespace IST_LEAD.LEAD_API
 {
@@ -44,6 +47,7 @@ namespace IST_LEAD.LEAD_API
             // var connectionString = _configuration.GetConnectionString("PostgreConnectionString");
             var connectionString = EnvReader.GetStringValue("PostgreConnectionString");
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
+            
             services.AddDbContext<DataContext>(options =>
             {
                 options.
@@ -51,7 +55,14 @@ namespace IST_LEAD.LEAD_API
                         assembly => assembly.MigrationsAssembly("IST_LEAD.DAL.PostgreSQL"));
 
             });
+            
 
+            services.AddScoped<IDirectusManager>(x => new DirectusManager(new DirectusProvider(
+                                                    EnvReader.GetStringValue("BearerForAPI"),
+                                                    EnvReader.GetStringValue("LocalDirectus")
+                                                    )));
+            
+            
             services.AddScoped<IDbRepository, DbRepository>();
 
             services.AddControllers();

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using IST_LEAD.Core;
@@ -33,10 +35,26 @@ namespace IST_LEAD.BusinessLogic.Sevices
         }
 
         
-        
-        public async Task<FileEntity> WriteFile(IFormFile file)
+        public async Task<bool> GetFileByPath(string saveFilePath, string BasefilePath)
         {
-            throw new NotImplementedException();
+            if(!File.Exists(saveFilePath))
+            {
+                using(WebClient webClient = new WebClient()){
+                    try
+                    {
+                        webClient.DownloadFileTaskAsync(new Uri(BasefilePath), saveFilePath).Wait();
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
 
     }

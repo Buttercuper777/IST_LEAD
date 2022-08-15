@@ -15,4 +15,8 @@
       <ProjectReference Include="..\IST_LEAD.Core\IST_LEAD.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\Customs\Attributes" />
+    </ItemGroup>
+
 </Project>

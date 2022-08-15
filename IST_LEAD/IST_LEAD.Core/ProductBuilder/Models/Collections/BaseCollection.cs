@@ -2,23 +2,28 @@
 
 namespace IST_LEAD.Core.ProductBuilder.Models.Collections;
 
-public abstract class BaseCollection
+public class BaseCollection
 {
     
-    protected BaseCollection(string id, slugField slug)
+    internal BaseCollection(int id, slugField slug)
     {
         this.Id = id;
         this.Slug = slug;
     }
+    
+    internal BaseCollection(string name)
+    {
+        CategoryName = new stringField(name);
+    }
 
-    public string GetId() => Id;
+    public int GetId() => Id;
     public slugField GetSlug() => Slug;
     
     
-    private string Id { get; }
-    private slugField Slug { get; }
+    internal int Id { get; }
+    internal slugField Slug { get; }
     
-    public virtual stringField CategoryName { get; set; }
+    internal virtual stringField CategoryName { get; set; }
     
     
 

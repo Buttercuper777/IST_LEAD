@@ -26,5 +26,10 @@ public abstract class BaseProduct
     public virtual Collection Type { get; set; }
     public virtual Collection Unit { get; set; }
 
+    // public virtual stringField ProductNameRu { get; set; }
+    // public virtual stringField Weight { get; set; }
+    // public virtual stringField Price { get; set; }
+    // public virtual stringField Sizes { get; set; }
+    
 
 }
