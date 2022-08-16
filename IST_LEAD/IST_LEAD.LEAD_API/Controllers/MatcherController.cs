@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CloudinaryDotNet.Actions;
 using IST_LEAD.BusinessLogic.Sevices;
 using IST_LEAD.Core.Abstract;
@@ -14,6 +15,7 @@ using IST_LEAD.Integrations.Cloudinary.Models;
 using IST_LEAD.Integrations.Directus.Customs.Excels;
 using IST_LEAD.Integrations.Directus.Customs.Products;
 using IST_LEAD.Integrations.Directus.Externals.Abstract;
+using IST_LEAD.Integrations.Directus.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -38,7 +40,7 @@ public class MatcherController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult GetExcelValues([FromBody] ExcelLocations json)
+    public async Task<IActionResult> GetExcelValues([FromBody] ExcelLocations json)
     {
 
         if (json ==  null)
@@ -104,11 +106,46 @@ public class MatcherController : ControllerBase
         
         //Set Images [MFG_VEND_CODE -> Image]
         ProductMapper.SetHardImage(newProducts, ImagesResult);
-        
+
+        var provider = _directusManager.GetProvider();
         
         foreach (var product in newProducts)
         {
             var listOfCollections = ProductMapper.GetCollections(product);
+            
+            foreach (var collection in listOfCollections)
+            {
+
+                var collectionName = collection.GetName();
+                
+                var relationWithField = provider.Relations.FindRelationWithField(collectionName);
+                var targetRelations = await provider.Relations.GetRelations(relationWithField.Result.Collection);
+                var relatredCollection =
+                    provider.Relations.GetRelatedCollection(targetRelations, collectionName);
+
+                ItemsObject AllItemsOfDirectusCollection = null;
+                if (relatredCollection != null)
+                {
+                    AllItemsOfDirectusCollection = await provider.Items.GetItems(relatredCollection);
+                }
+
+                if (AllItemsOfDirectusCollection != null)
+                {
+                    var newCollectionsMatcher = new CollectionsMatcher();
+                    var MatchedNamedCollection = newCollectionsMatcher.CollectionsMatching(collection, AllItemsOfDirectusCollection);
+                    
+                    var CollectionOfMatchedCollection = MatchedNamedCollection.GetCollection();
+                    
+                    collection.SetCollection(CollectionOfMatchedCollection);
+                    
+                }
+            
+                ProductMapper.SetCollection(product, collection);
+            }
+        }
+
+        if (newProducts != null)
+        {
             
         }
         

@@ -11,10 +11,15 @@ public class ItemsObject
             Items = new List<OneItemObject>();
         }
 
-        public void AddRelation(OneItemObject item)
+        public void AddItem(OneItemObject item)
         {
             Items.Add(item);
-        }    
+        }
+
+        public List<OneItemObject> GetItems()
+        {
+            return Items;
+        }
     
         [JsonProperty("data")]
         public List<OneItemObject> Items { get; set; } = null!;

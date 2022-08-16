@@ -13,7 +13,11 @@ public class DirectusManager : IDirectusManager
     {
         _provider = newProvider;
     }
-    
+
+    public DirectusProvider GetProvider()
+    {
+        return _provider;
+    }
     
     public T GetExcelLocationsObject<T>(string json, T obj)
     {

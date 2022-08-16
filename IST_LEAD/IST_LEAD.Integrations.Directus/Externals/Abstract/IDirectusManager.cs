@@ -3,4 +3,6 @@
 public interface IDirectusManager
 {
     public excelLocations GetExcelLocationsObject<excelLocations>(string json, excelLocations obj);
+
+    public DirectusProvider GetProvider();
 }

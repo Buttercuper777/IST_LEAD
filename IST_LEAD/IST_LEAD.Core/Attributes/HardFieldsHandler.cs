@@ -12,7 +12,7 @@ using IST_LEAD.Core.ProductBuilder.Models.Product;
 
 namespace IST_LEAD.Core.Attributes;
 
-public class HardFieldsHandler<MapObject> where MapObject : new()
+public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
 {
 
     private static List<MapObject> ListOfEntities { get; set; }
@@ -106,11 +106,11 @@ public class HardFieldsHandler<MapObject> where MapObject : new()
 
                     var newCollection = new Collection(
                         slug: new slugField(CollectionName),
-                        id: 0
+                        id: 0,
+                        name: CollectionName
                     );
                     
                     resListOfCollections.Add(new NamedCollection(
-                    
                             collection: newCollection,
                             name:  prop.GetCustomAttribute<HardCollectionAttribute>()?.CollectionName
                         )
@@ -196,6 +196,41 @@ public class HardFieldsHandler<MapObject> where MapObject : new()
             }
         }
     }
-    
-  
+
+    public void SetCollection(MapObject product, NamedCollection collection)
+    {
+        var newCollection = collection.GetCollection();
+        var newCollectionName = collection.GetName();
+        string CollectionName = null;
+        
+        var type = typeof(MapObject);       
+        var props = type.GetProperties();
+        
+        foreach (var prop in props)
+        {
+            if (Attribute.IsDefined(prop, typeof(HardCollectionAttribute)))
+            {
+                var collectionName = prop.GetCustomAttribute<HardCollectionAttribute>()?.CollectionName;
+                if (newCollectionName == collectionName)
+                {
+                    var arg = new Object[]
+                    {
+                        newCollection.Id,
+                        newCollection.Slug,
+                        newCollection.CategoryName.GetValue()
+                    };
+                    
+                    var instance = Activator.CreateInstance(
+                        prop.PropertyType, arg
+                    );
+                    
+                    if (instance != null)
+                    {
+                        prop.SetValue(product, instance, null);
+                    }
+                    
+                }
+            }
+        }
+    }
 }

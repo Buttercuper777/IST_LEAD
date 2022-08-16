@@ -64,7 +64,7 @@ namespace IST_LEAD.LEAD_API.Controllers
         {
             var Directus = new DirectusProvider("YjE3ZmE0OWUtNTFhMC00YmJlLTllOGItNjE4NzBhY2JkYjAz");
             
-            var Relations = await Directus.Relations.GetRelations();
+            
             var rWF = Directus.Relations.FindRelationWithField(collection);
             var b = rWF.Result;
             

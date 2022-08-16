@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IST_LEAD.Core\IST_LEAD.Core.csproj" />
+    <ProjectReference Include="..\IST_LEAD.Integrations.Directus\IST_LEAD.Integrations.Directus.csproj" />
   </ItemGroup>
 
   <ItemGroup>

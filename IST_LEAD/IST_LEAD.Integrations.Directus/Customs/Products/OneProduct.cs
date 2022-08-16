@@ -56,6 +56,8 @@ public class OneProduct : BaseProduct
     public override Collection Manufacturer { get; set; } 
     
     [Required]
+    
+    
     [HardCollection("product_type")]
     [HardField("product_type")]
     public override Collection Type { get; set; }
