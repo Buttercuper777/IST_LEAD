@@ -20,6 +20,7 @@ using IST_LEAD.Integrations.Directus.Customs.Products;
 using IST_LEAD.Integrations.Directus.Externals.Abstract;
 using IST_LEAD.Integrations.Directus.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 
 namespace IST_LEAD.LEAD_API.Controllers;
@@ -48,13 +49,10 @@ public class MatcherController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> GetExcelValues([FromBody] ExcelLocations json)
     {
-
         if (json ==  null)
-            return BadRequest();  
-        
+            return BadRequest();
         
         Guid fileId = Guid.Parse(json.FileId);
-
         ExcelEntity entity = null;
         
         try
@@ -64,9 +62,11 @@ public class MatcherController : ControllerBase
         catch (Exception ex) { throw new Exception(ex.Message);}
         
         if (entity == null)
-            return Ok(null);
+            throw new Exception("Unexpected error. There is no record with the file in the database");
         
+        // Сделать сервисом 
         var excelHandler = new HandleExcelService(entity.FilePath, entity.FileName);
+        
         var ExcelColumnsValuesList = new List<ExcelColumnsList>();
 
         foreach (var el in json.Fields)
@@ -75,30 +75,22 @@ public class MatcherController : ControllerBase
             {
                 Values = new List<string>()
             };
-          
             newColumn.ColName = el.FieldName;
-
             newColumn = excelHandler.GetColumnValues(el.location, newColumn);
-            
             ExcelColumnsValuesList.Add(newColumn);
-            
         }
 
         var ExcelRows = excelHandler.GetNumOfExcelRows();
         excelHandler.ExcelDelete();
-
         var newProducts = new List<OneProduct>();
-        
         for (int i = 0; i < ExcelRows; i++)
         {
             newProducts.Add(new OneProduct());
         }
         
-        
-        
         //New product Mapper
         var ProductMapper = new HardFieldsHandler<OneProduct>(newProducts);
-
+        
         //Set fields & slugs[PRODUCT_NAME -> SLUG] from Ex-Cols to Products 
         foreach (var Column in ExcelColumnsValuesList)
         {
@@ -121,7 +113,6 @@ public class MatcherController : ControllerBase
             
             foreach (var collection in listOfCollections)
             {
-
                 var collectionName = collection.GetName();
                 
                 var relationWithField = directusProvider.Relations.FindRelationWithField(collectionName);
@@ -129,52 +120,43 @@ public class MatcherController : ControllerBase
                 var relatredCollection =
                     directusProvider.Relations.GetRelatedCollection(targetRelations, collectionName);
 
-                ItemsObject AllItemsOfDirectusCollection = null;
-                if (relatredCollection != null)
-                {
-                    AllItemsOfDirectusCollection = await directusProvider.Items.GetItems(relatredCollection);
-                }
+                ItemsObject allItemsOfDirectusCollection = null;
+                
+                if (relatredCollection != null) 
+                    allItemsOfDirectusCollection = await directusProvider.Items.GetItems(relatredCollection);
 
-                if (AllItemsOfDirectusCollection != null)
+
+                if (allItemsOfDirectusCollection != null)
                 {
                     var newCollectionsMatcher = new CollectionsMatcher();
-                    var MatchedNamedCollection = newCollectionsMatcher.CollectionsMatching(collection, AllItemsOfDirectusCollection);
-                    
+                    var MatchedNamedCollection =
+                        newCollectionsMatcher.CollectionsMatching(collection, allItemsOfDirectusCollection);
                     var CollectionOfMatchedCollection = MatchedNamedCollection.GetCollection();
-                    
                     collection.SetCollection(CollectionOfMatchedCollection);
-                    
                 }
-            
+                else
+                    throw new Exception("Collections matching error");
+                
                 ProductMapper.SetCollection(product, collection);
             }
         }
         
-        
-        foreach (var product in newProducts)
-        {
-            var outProd = new SerializationProduct();
-            var fieldsSer = new FieldsSerializer<OneProduct, SerializationProduct>(outProd);
-            var serdProd = fieldsSer.GetSerializationAttributes(product);
-
-            var allProducts = await directusProvider.Items.GetItems("Products");
-            var MaxProductIndex = allProducts.Items.Max(x => x.Id) + 1;
-
-            _vendCoder.setVendCode(serdProd, "vend_code", MaxProductIndex);
-
-        }
-        
-        
-        
-        var jsonResult = "";
-        if (newProducts != null)
-        {
-            jsonResult = JsonConvert.SerializeObject(newProducts);
-        }
-
-        var JsonObj = json;
-        return Ok(JsonObj);
-        
+        return Ok();
     }
     
+    
+    // foreach (var product in newProducts)
+    // {
+    //     var outProd = new SerializationProduct();
+    //     var fieldsSer = new FieldsSerializer<OneProduct, SerializationProduct>(outProd);
+    //     var serdProd = fieldsSer.GetSerializationAttributes(product);
+    //
+    //     var allProducts = await directusProvider.Items.GetItems("Products");
+    //     var MaxProductIndex = allProducts.Items.Max(x => x.Id) + 1;
+    //
+    //     _vendCoder.setVendCode(serdProd, "vend_code", MaxProductIndex);
+    //
+    // }
+
+
 }

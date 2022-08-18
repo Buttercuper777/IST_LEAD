@@ -1,10 +1,12 @@
 ﻿using IST_LEAD.Core.ProductBuilder.Models.Collections;
 using IST_LEAD.Core.ProductBuilder.Models.Fields;
+using IST_LEAD.Core.ProductBuilder.Models.Selections;
 
 namespace IST_LEAD.Core.ProductBuilder.Models.Product;
 
 public abstract class BaseProduct
 {
+    public virtual Selection TypeOfEquipment { get; set; }
     public virtual urlField ImageUrl { get; set; }
     public virtual slugField Slug { get; set; }
     

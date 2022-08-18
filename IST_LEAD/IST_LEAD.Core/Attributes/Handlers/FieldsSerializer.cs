@@ -16,21 +16,6 @@ public class FieldsSerializer<SerializeObject, OutputObject> where SerializeObje
 
     }
     
-    // private void HaveAttributesInit()
-    // {
-    //     var itemType = typeof(SerializeObject);
-    //     var itemProps = itemType.GetProperties();
-    //     foreach (var prop in itemProps)
-    //     {
-    //         HaveAttributesDictionary.Add("HardFieldAttribute", 
-    //             Attribute.IsDefined(prop, typeof(HardFieldAttribute)));
-    //         
-    //         HaveAttributesDictionary.Add("FieldNameForOutAttribute", 
-    //             Attribute.IsDefined(prop, typeof(FieldNameForOutAttribute)));
-    //     }
-    // }
-
-
     
     public OutputObject GetSerializationAttributes(SerializeObject item)
     {
@@ -92,10 +77,7 @@ public class FieldsSerializer<SerializeObject, OutputObject> where SerializeObje
                     
                     if (propFieldValue != null)
                     {
-                        // var args = new Object[]
-                        // {
-                        //     propFieldValue.GetValue(propField, null)
-                        // };
+
                         var valueForAdd = propFieldValue.GetValue(propField, null);
                         
                         var IListRef = typeof (List<>);
@@ -103,7 +85,31 @@ public class FieldsSerializer<SerializeObject, OutputObject> where SerializeObje
                         object Result = Activator.CreateInstance(IListRef.MakeGenericType(IListParam));
                         Result.GetType().GetMethod("Add").Invoke(Result, new[] {valueForAdd});
                         
+                        if (Result != null)
+                            outProp.SetValue(ForOut, Result, null);
+                    }
+                }
+            }
+
+            if (Attribute.IsDefined(prop, typeof(HardSelectionAttribute)))
+            {
+                if (outProp != null)
+                {
+                    var propField = prop.GetValue(item, null);
+                    var propFieldValue = propField.GetType().GetProperty("Selections",
+                        BindingFlags.Instance |
+                        BindingFlags.NonPublic);
+                    
+                    if (propFieldValue != null)
+                    {
+                        var valueForAdd = propFieldValue.GetValue(propField, null);
                         
+                        
+                        var IListRef = typeof(List<>);
+                        Type[] IListParam = {typeof(string)};          
+                        
+                        object Result = Activator.CreateInstance(IListRef.MakeGenericType(IListParam));
+                        Result.GetType().GetMethod("AddRange").Invoke(Result, new[] {valueForAdd});
                         
                         if (Result != null)
                             outProp.SetValue(ForOut, Result, null);

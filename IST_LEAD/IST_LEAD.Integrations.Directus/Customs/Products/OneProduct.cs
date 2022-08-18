@@ -3,11 +3,15 @@ using IST_LEAD.Core.Attributes;
 using IST_LEAD.Core.ProductBuilder.Models.Collections;
 using IST_LEAD.Core.ProductBuilder.Models.Fields;
 using IST_LEAD.Core.ProductBuilder.Models.Product;
+using IST_LEAD.Core.ProductBuilder.Models.Selections;
 
 namespace IST_LEAD.Integrations.Directus.Customs.Products;
 
 public class OneProduct : BaseProduct
 {
+    [HardSelection]
+    [HardField("type_of_equipment")]
+    public override Selection TypeOfEquipment { get; set; }
     
     [Required]
     [FieldNameForOut("slug")]

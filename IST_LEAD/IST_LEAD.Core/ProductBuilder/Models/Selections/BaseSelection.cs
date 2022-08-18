@@ -1,16 +1,21 @@
 ﻿using System.Collections.Generic;
+using IST_LEAD.Core.ProductBuilder.Models.Fields;
 
 namespace IST_LEAD.Core.ProductBuilder.Models.Selections;
 
 public abstract class BaseSelection
 {
-    private List<string> Selections { get; }
-
+    internal abstract List<string> Selections { get; }
+    
     internal BaseSelection(string value)
     {
-        Selections.Add(value);
+        var consts = new SelectionConstants();
+        var constValue = consts.GetConstByName(value);
+        
+        Selections.AddRange(constValue);
     }
-
+    
+    
     public List<string> GetSelections()
     {
         return Selections;

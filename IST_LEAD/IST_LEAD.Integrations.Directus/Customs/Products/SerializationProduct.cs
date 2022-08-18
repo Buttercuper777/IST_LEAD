@@ -4,6 +4,8 @@ namespace IST_LEAD.Integrations.Directus.Customs.Products;
 
 public class SerializationProduct
 {
+    public List<string> type_of_equipment { get; set; }
+
     public string slug { get; set; }
     public string product_name_ru { get; set; }
     public string product_name { get; set; }
@@ -21,4 +23,5 @@ public class SerializationProduct
     public List<int> product_unit { get; set; }
 
     public string vend_code { get; set; }
+    
 }
