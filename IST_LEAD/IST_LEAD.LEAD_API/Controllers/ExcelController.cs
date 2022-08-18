@@ -58,31 +58,31 @@ namespace IST_LEAD.LEAD_API.Controllers
             
         }
         
-        [HttpGet]
-        [Route("Try")]
-        public async Task<IActionResult> Try(string collection)
-        {
-            var Directus = new DirectusProvider("YjE3ZmE0OWUtNTFhMC00YmJlLTllOGItNjE4NzBhY2JkYjAz");
-            
-            
-            var rWF = Directus.Relations.FindRelationWithField(collection);
-            var b = rWF.Result;
-            
-            var targetRelations = await Directus.Relations.GetRelations(b.Collection);
-            
-            
-            var final_relation = Directus.Relations.GetRelatedCollection(targetRelations, collection);
-            var Items = await Directus.Items.GetItems(final_relation);
-      
-            if (Items != null)
-            {
-                // var JsonResp = JsonConvert.SerializeObject(Relations);
-                return Ok(Items);
-            }
-            
-            return BadRequest();
-            
-        }
+        // [HttpGet]
+        // [Route("Try")]
+        // public async Task<IActionResult> Try(string collection)
+        // {
+        //     var Directus = new DirectusProvider("");
+        //     
+        //     
+        //     var rWF = Directus.Relations.FindRelationWithField(collection);
+        //     var b = rWF.Result;
+        //     
+        //     var targetRelations = await Directus.Relations.GetRelations(b.Collection);
+        //     
+        //     
+        //     var final_relation = Directus.Relations.GetRelatedCollection(targetRelations, collection);
+        //     var Items = await Directus.Items.GetItems(final_relation);
+        //
+        //     if (Items != null)
+        //     {
+        //         // var JsonResp = JsonConvert.SerializeObject(Relations);
+        //         return Ok(Items);
+        //     }
+        //     
+        //     return BadRequest();
+        //     
+        // }
         
         
     }

@@ -2,6 +2,8 @@ using dotenv.net.Utilities;
 using IST_LEAD.BusinessLogic.Sevices;
 using IST_LEAD.Core;
 using IST_LEAD.Core.Abstract;
+using IST_LEAD.Core.Abstract.Services;
+using IST_LEAD.Core.Models.Common;
 using IST_LEAD.DAL;
 using IST_LEAD.Integrations.Cloudinary;
 using IST_LEAD.Integrations.Cloudinary.Implementation;
@@ -18,8 +20,10 @@ using Microsoft.OpenApi.Models;
 using Npgsql;
 using IST_LEAD.DAL.Repository;
 using IST_LEAD.Integrations.Directus;
+using IST_LEAD.Integrations.Directus.Customs.Products;
 using IST_LEAD.Integrations.Directus.Externals.Abstract;
 using IST_LEAD.Integrations.Directus.Externals.Implementation;
+using IST_LEAD.Integrations.Directus.Models;
 
 namespace IST_LEAD.LEAD_API
 {
@@ -65,6 +69,9 @@ namespace IST_LEAD.LEAD_API
             
             services.AddScoped<IDbRepository, DbRepository>();
 
+            services.AddTransient<IVendCoderService, VendCoderService>();
+            
+            
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

@@ -11,6 +11,11 @@ public abstract class BaseField
     {
         Field = field;
     }
+
+    public BaseField(BaseField item)
+    {
+        this.Field = item.Field;
+    }
     
     public string GetValue()
     {

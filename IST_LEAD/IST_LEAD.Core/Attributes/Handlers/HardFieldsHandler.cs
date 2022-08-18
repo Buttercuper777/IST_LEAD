@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
 using IST_LEAD.Core.Abstract.Cloudinary;
-using IST_LEAD.Core.Models.ExcelHandlerModels;
 using IST_LEAD.Core.Models.ExcelMatchingModels;
 using IST_LEAD.Core.ProductBuilder.Models.Collections;
 using IST_LEAD.Core.ProductBuilder.Models.Fields;
 using IST_LEAD.Core.ProductBuilder.Models.Product;
 
-namespace IST_LEAD.Core.Attributes;
+namespace IST_LEAD.Core.Attributes.Handlers;
 
 public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
 {
 
     private static List<MapObject> ListOfEntities { get; set; }
+  
 
     public HardFieldsHandler(List<MapObject> list)
     {
@@ -27,7 +25,19 @@ public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
         return ListOfEntities;
     }
     
+    private string CheckContains(BaseSearchResult list, string value)
+    {
+        foreach (var entity in list.resources)
+        {
+            if (entity.filename.Contains(value))
+            {
+                return entity.url;
+            }
+        }
 
+        return null;
+    }
+    
     public void MapHardFields(ExcelColumnsList list, int numOfItems)
     {
         // var newTItem = new MapObject();
@@ -121,19 +131,6 @@ public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
             }
 
             return resListOfCollections;
-    }
-    
-    private string CheckContains(BaseSearchResult list, string value)
-    {
-        foreach (var entity in list.resources)
-        {
-            if (entity.filename.Contains(value))
-            {
-                return entity.url;
-            }
-        }
-
-        return null;
     }
     
     public void SetHardImage(List<MapObject> list,  BaseSearchResult images) 
@@ -233,4 +230,6 @@ public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
             }
         }
     }
+    
 }
+

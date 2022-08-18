@@ -6,11 +6,7 @@ namespace IST_LEAD.BusinessLogic.Sevices;
 
 public class CollectionsMatcher
 {
-    public CollectionsMatcher()
-    {
-        
-    }
-    
+
     public NamedCollection CollectionsMatching(NamedCollection namedCollection, ItemsObject allCollections)
     {
         var productCollection = namedCollection.GetCollection();

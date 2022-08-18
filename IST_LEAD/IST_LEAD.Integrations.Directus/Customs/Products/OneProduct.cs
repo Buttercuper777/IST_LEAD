@@ -10,6 +10,7 @@ public class OneProduct : BaseProduct
 {
     
     [Required]
+    [FieldNameForOut("slug")]
     [HardField("product_name_ru")]
     public override slugField Slug { get; set; }
     
@@ -27,6 +28,7 @@ public class OneProduct : BaseProduct
     public override stringField Weight { get; set; } = new stringField("Check by phone");
     
     [HardField("product_name_ru")]
+    [FieldNameForOut("text_description")]
     public override stringField TextDescription { get; set; } = new stringField("Check by phone");
     
     [HardField("price")]
@@ -44,25 +46,25 @@ public class OneProduct : BaseProduct
     [HardField("included_text")]
     public override stringField Included { get; set; } = new stringField("Check by phone");
     
-    
     [HardImage]
+    [FieldNameForOut("image_url")]
     public override urlField ImageUrl { get; set; } =
         new urlField("https://res.cloudinary.com/dv9xitsjg/image/upload/v1660219704/Empty_Prod_image_hgbdyr.svg");
-
     
-    [Required]
-    [HardCollection("product_manufacturer")]
-    [HardField("product_manufacturer")]
+    
+    // [FieldNameForOut("manufacturer_name")]      //  Field name for serialization [Manufacturer -> manufacturer_name]
+    [HardCollection("product_manufacturer")]    //  Set name of NamedCollection here
+    [HardField("product_manufacturer")]         //  To set value during mapping  [Data from product_manufacturer -> to this]
     public override Collection Manufacturer { get; set; } 
     
-    [Required]
-    
-    
+
+    // [FieldNameForOut("type_name")]
     [HardCollection("product_type")]
     [HardField("product_type")]
     public override Collection Type { get; set; }
     
-    [Required]
+
+    // [FieldNameForOut("type_name")]
     [HardCollection("product_unit")]
     [HardField("product_unit")]
     public override Collection Unit { get; set; }

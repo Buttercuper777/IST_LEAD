@@ -1,9 +1,10 @@
-﻿using IST_LEAD.Integrations.Directus.Implementation;
+﻿using IST_LEAD.Integrations.Directus.Abstract;
+using IST_LEAD.Integrations.Directus.Implementation;
 using Newtonsoft.Json;
 
 namespace IST_LEAD.Integrations.Directus.Models;
 
-public class ItemsObject
+public class ItemsObject : IItemsObject
 {
 
         public ItemsObject()

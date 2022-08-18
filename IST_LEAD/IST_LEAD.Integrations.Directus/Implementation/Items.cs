@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Text;
 using IST_LEAD.Integrations.Directus.Abstract;
 using IST_LEAD.Integrations.Directus.Models;
 using Newtonsoft.Json;
@@ -47,5 +48,39 @@ public class Items : IDirectusItemsManager
         }
 
         return Items;
+    }
+
+    public async Task<int> AddNewItem(string query, string queryPath)
+    {
+
+        var newQuery = new StringContent(query, Encoding.UTF8, "application/json");
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = 
+                    new AuthenticationHeaderValue("Bearer", AccessToket);
+                
+                using (HttpResponseMessage res = await client.
+                           PostAsync((BaseUrl + ItemssPath + queryPath), newQuery))
+                {
+                    using (HttpContent content = res.Content)
+                    {
+                        string data = await content.ReadAsStringAsync();
+                        if (data != null)
+                        {
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            return 0;
+        }
+
+        return 0;
+
     }
 }

@@ -55,6 +55,9 @@ public class slugField : BaseField
     
     
     protected sealed override string Field { get; set; }
+
+    public slugField(slugField item) : base(item) { }
+    
     public slugField(string field) : base(field)
     {
         if (field != null)
@@ -64,5 +67,7 @@ public class slugField : BaseField
             Field = GenerateSlug(engSlug);
         }
     }
+    
+    
     
 }

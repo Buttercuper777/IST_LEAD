@@ -7,6 +7,11 @@ public class stringField : BaseField
     protected override string Field { get; set; }
     // internal string sField { get; set; }
 
+    public stringField(stringField item) : base(item)
+    {
+        
+    }
+    
     public stringField(string value) : base(value)
     {
         // sField = value;

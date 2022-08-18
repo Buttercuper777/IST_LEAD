@@ -10,22 +10,10 @@ public sealed class urlField : BaseField
     {
         this.CreateUrl(field);
     }
-    
-    
-    // public override bool AddUrl(string url)
-    // {
-    //     Uri uriResult = null;
-    //     bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult) 
-    //                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-    //
-    //     if (result && uriResult != null )
-    //     {
-    //         this.SetValue(uriResult.ToString());
-    //     }
-    //
-    //     return result;
-    // }
 
+    public urlField(urlField item) : base(item) { }
+    
+    
     
     public override string CreateUrl(string url)
     {

@@ -1,14 +1,15 @@
 ﻿using System.Text.Json.Serialization;
+using IST_LEAD.Integrations.Directus.Abstract;
 using Newtonsoft.Json;
 
 namespace IST_LEAD.Integrations.Directus.Models;
 
-public class OneItemObject
+public class OneItemObject : IOneItemObject
 {
     [JsonProperty("id" , NullValueHandling = NullValueHandling.Ignore)]
-    public int Id { get; set; }
+    public override int Id { get; set; }
     
     [JsonProperty("slug", NullValueHandling = NullValueHandling.Ignore)]
-    public string Slug { get; set; }
+    public override string Slug { get; set; }
     
 }

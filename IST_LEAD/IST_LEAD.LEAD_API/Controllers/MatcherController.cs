@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using CloudinaryDotNet.Actions;
 using IST_LEAD.BusinessLogic.Sevices;
 using IST_LEAD.Core.Abstract;
+using IST_LEAD.Core.Abstract.Services;
 using IST_LEAD.Core.Attributes;
+using IST_LEAD.Core.Attributes.Handlers;
+using IST_LEAD.Core.Models.Common;
 using IST_LEAD.Core.Models.ExcelMatchingModels;
 using IST_LEAD.Core.ProductBuilder.Models.Collections;
 using IST_LEAD.Core.ProductBuilder.Models.Fields;
@@ -30,13 +33,16 @@ public class MatcherController : ControllerBase
     private readonly ICloudinaryManager _cloudinaryManager;
     private readonly IDbRepository _dbRepository;
     private readonly IFileManager _fileManager;
-    
-    public MatcherController(IDirectusManager directusManager, ICloudinaryManager cloudinaryManager, IDbRepository dbRepository, IFileManager fileManager)
+    private readonly IVendCoderService _vendCoder;
+
+    public MatcherController(IDirectusManager directusManager, ICloudinaryManager cloudinaryManager,
+        IDbRepository dbRepository, IFileManager fileManager, IVendCoderService vendCoder)
     {
         _directusManager = directusManager;
         _cloudinaryManager = cloudinaryManager;
         _dbRepository = dbRepository;
         _fileManager = fileManager;
+        _vendCoder = vendCoder;
     }
 
     [HttpPost]
@@ -107,7 +113,7 @@ public class MatcherController : ControllerBase
         //Set Images [MFG_VEND_CODE -> Image]
         ProductMapper.SetHardImage(newProducts, ImagesResult);
 
-        var provider = _directusManager.GetProvider();
+        var directusProvider = _directusManager.GetProvider();
         
         foreach (var product in newProducts)
         {
@@ -118,15 +124,15 @@ public class MatcherController : ControllerBase
 
                 var collectionName = collection.GetName();
                 
-                var relationWithField = provider.Relations.FindRelationWithField(collectionName);
-                var targetRelations = await provider.Relations.GetRelations(relationWithField.Result.Collection);
+                var relationWithField = directusProvider.Relations.FindRelationWithField(collectionName);
+                var targetRelations = await directusProvider.Relations.GetRelations(relationWithField.Result.Collection);
                 var relatredCollection =
-                    provider.Relations.GetRelatedCollection(targetRelations, collectionName);
+                    directusProvider.Relations.GetRelatedCollection(targetRelations, collectionName);
 
                 ItemsObject AllItemsOfDirectusCollection = null;
                 if (relatredCollection != null)
                 {
-                    AllItemsOfDirectusCollection = await provider.Items.GetItems(relatredCollection);
+                    AllItemsOfDirectusCollection = await directusProvider.Items.GetItems(relatredCollection);
                 }
 
                 if (AllItemsOfDirectusCollection != null)
@@ -143,11 +149,21 @@ public class MatcherController : ControllerBase
                 ProductMapper.SetCollection(product, collection);
             }
         }
-
-        if (newProducts != null)
+        
+        
+        foreach (var product in newProducts)
         {
-            
+            var outProd = new SerializationProduct();
+            var fieldsSer = new FieldsSerializer<OneProduct, SerializationProduct>(outProd);
+            var serdProd = fieldsSer.GetSerializationAttributes(product);
+
+            var allProducts = await directusProvider.Items.GetItems("Products");
+            var MaxProductIndex = allProducts.Items.Max(x => x.Id) + 1;
+
+            _vendCoder.setVendCode(serdProd, "vend_code", MaxProductIndex);
+
         }
+        
         
         
         var jsonResult = "";
