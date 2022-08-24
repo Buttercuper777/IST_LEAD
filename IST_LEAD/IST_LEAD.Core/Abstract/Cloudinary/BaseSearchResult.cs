@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace IST_LEAD.Core.Abstract.Cloudinary;
@@ -6,13 +7,14 @@ namespace IST_LEAD.Core.Abstract.Cloudinary;
 public abstract class BaseSearchResult
 {
     [JsonProperty("resources")]
-    public List<searchRes> resources { get; set; }
+    public List<BaseSearchResItem> resources { get; set; }
 }
-public class searchRes
+
+public class BaseSearchResItem 
 {
     [JsonProperty("filename")]
-    internal string filename { get; set; }
+    public string filename { get; set; }
     
     [JsonProperty("url")]
-    internal string url { get; set; }
+    public string url { get; set; }
 }

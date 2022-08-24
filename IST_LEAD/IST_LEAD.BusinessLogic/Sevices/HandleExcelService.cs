@@ -11,13 +11,14 @@ using System.Threading.Tasks;
 using ExcelDataReader;
 using Newtonsoft.Json;
 using IST_LEAD.Core;
+using IST_LEAD.Core.Abstract.Services;
 using IST_LEAD.Core.Models.Common;
 using IST_LEAD.Core.Models.ExcelHandlerModels;
 using IST_LEAD.Core.Models.ExcelMatchingModels;
 
 namespace IST_LEAD.BusinessLogic.Sevices
 {
-    public class HandleExcelService
+    public class HandleExcelService : IHandleExcelService
     {
         private static string baseDirectory = @"..\";
         private static string pathString = System.IO.Path.Combine(baseDirectory, "LocalStorage");
@@ -25,17 +26,27 @@ namespace IST_LEAD.BusinessLogic.Sevices
         private static string FileUrl { get; set; } = "";
         private static string FileName { get; set; } = "";
         
-
-        public HandleExcelService(string filePath, string fileName)
+        
+ 
+        public IHandleExcelService Init(string filePath, string fileName)
         {
             FileUrl = filePath;
             FileName = fileName;
+
+            return this;
         }
 
+        private void isInit()
+        {
+            if (FileUrl == "" || FileName == "")
+                throw new Exception("Service for work was created but" +
+                                    " was not initialized.");
+        }
         
-        // GetAllExcelColumns
         public string GetAllExcelColumns()
         {
+            isInit();
+            
             var fileManager = new FileManager();
             
             Directory.CreateDirectory(pathString);
@@ -112,9 +123,9 @@ namespace IST_LEAD.BusinessLogic.Sevices
         }
 
 
-        public ExcelColumnsList GetColumnValues(Location location, ExcelColumnsList excelColumnsList)
+        public ExcelColumnValues GetColumnValues(Location location, ExcelColumnValues excelColumnValues)
         {
-            
+            isInit();
             var fileManager = new FileManager();
             
             var fileString = System.IO.Path.Combine(pathString,
@@ -140,9 +151,9 @@ namespace IST_LEAD.BusinessLogic.Sevices
 
             DataTable table = ds.Tables[0];
 
-            if (excelColumnsList != null)
+            if (excelColumnValues != null)
             {
-                var columnValues = excelColumnsList;
+                var columnValues = excelColumnValues;
 
                 for (int i = 0; i < table.Rows.Count; i++)
                 {
@@ -161,6 +172,7 @@ namespace IST_LEAD.BusinessLogic.Sevices
 
         public void ExcelDelete()
         {
+            isInit();
             var fileManager = new FileManager();
             var fileString = System.IO.Path.Combine(pathString,
                 fileManager.Base64Encode(FileName));
@@ -170,6 +182,7 @@ namespace IST_LEAD.BusinessLogic.Sevices
 
         public int GetNumOfExcelRows()
         {
+            isInit();
             var fileManager = new FileManager();
             var fileString = System.IO.Path.Combine(pathString,
                 fileManager.Base64Encode(FileName));

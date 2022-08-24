@@ -20,7 +20,7 @@ namespace IST_LEAD.LEAD_API.Controllers
     [ApiController]
     public class FilesController : ControllerBase
     {
-        public static IMapper Mapper { get; set; } = null!;
+        private IMapper Mapper { get; set; } = null!;
     
         //private readonly INewFileActions _newFileActions;
         private readonly ICloudinaryManager _cloudinaryManager;

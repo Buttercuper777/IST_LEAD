@@ -3,7 +3,7 @@ using IST_LEAD.Core.Models.Common;
 
 namespace IST_LEAD.Core.Models.ExcelMatchingModels;
 
-public class ExcelColumnsList
+public class ExcelColumnValues
 {
     public string ColName { get; set; }
     public List<string> Values { get; set; }

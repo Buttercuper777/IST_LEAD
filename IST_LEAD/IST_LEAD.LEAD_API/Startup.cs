@@ -1,9 +1,11 @@
 using dotenv.net.Utilities;
 using IST_LEAD.BusinessLogic.Sevices;
+using IST_LEAD.BusinessLogic.Sevices.ProductServices;
 using IST_LEAD.Core;
 using IST_LEAD.Core.Abstract;
 using IST_LEAD.Core.Abstract.Services;
 using IST_LEAD.Core.Models.Common;
+using IST_LEAD.Core.ProductBuilder.Abstract;
 using IST_LEAD.DAL;
 using IST_LEAD.Integrations.Cloudinary;
 using IST_LEAD.Integrations.Cloudinary.Implementation;
@@ -42,16 +44,16 @@ namespace IST_LEAD.LEAD_API
         {
             services.AddTransient<IFileManager, FileManager>();
             
+            
             services.AddScoped<ICloudinaryManager>(x => new CloudinaryManager(new CloudinarySettings(
                                                         EnvReader.GetStringValue("ApiKey"),
                                                         EnvReader.GetStringValue("ApiSecret"),
                                                         EnvReader.GetStringValue("CloudName") )));
 
                 
-            // var connectionString = _configuration.GetConnectionString("PostgreConnectionString");
+            
             var connectionString = EnvReader.GetStringValue("PostgreConnectionString");
             var builder = new NpgsqlConnectionStringBuilder(connectionString);
-            
             services.AddDbContext<DataContext>(options =>
             {
                 options.
@@ -60,17 +62,23 @@ namespace IST_LEAD.LEAD_API
 
             });
             
-
             services.AddScoped<IDirectusManager>(x => new DirectusManager(new DirectusProvider(
                                                     EnvReader.GetStringValue("BearerForAPI"),
                                                     EnvReader.GetStringValue("LocalDirectus")
                                                     )));
             
-            
             services.AddScoped<IDbRepository, DbRepository>();
-
+            services.AddTransient<IHandleExcelService, HandleExcelService>();
+            
+            services.AddTransient(typeof(IProductBuilderService<>), 
+                typeof(ProductBuilderService<>));
+            
             services.AddTransient<IVendCoderService, VendCoderService>();
             
+            
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+    
             
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -82,6 +90,9 @@ namespace IST_LEAD.LEAD_API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
+            app.UseSession();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -89,7 +100,6 @@ namespace IST_LEAD.LEAD_API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IST_LEAD.LEAD_API v1"));
             }
             
-
             app.UseHttpsRedirection();
 
             app.UseRouting();

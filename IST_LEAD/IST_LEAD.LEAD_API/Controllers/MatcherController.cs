@@ -1,27 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using CloudinaryDotNet.Actions;
+using AutoMapper;
 using IST_LEAD.BusinessLogic.Sevices;
+using IST_LEAD.BusinessLogic.Sevices.ProductServices;
 using IST_LEAD.Core.Abstract;
 using IST_LEAD.Core.Abstract.Services;
-using IST_LEAD.Core.Attributes;
 using IST_LEAD.Core.Attributes.Handlers;
-using IST_LEAD.Core.Models.Common;
 using IST_LEAD.Core.Models.ExcelMatchingModels;
+using IST_LEAD.Core.ProductBuilder.Abstract;
 using IST_LEAD.Core.ProductBuilder.Models.Collections;
-using IST_LEAD.Core.ProductBuilder.Models.Fields;
 using IST_LEAD.DAL.Entities;
 using IST_LEAD.DAL.Repository;
 using IST_LEAD.Integrations.Cloudinary.Models;
+using IST_LEAD.Integrations.Directus.Customs.Collections;
 using IST_LEAD.Integrations.Directus.Customs.Excels;
 using IST_LEAD.Integrations.Directus.Customs.Products;
 using IST_LEAD.Integrations.Directus.Externals.Abstract;
 using IST_LEAD.Integrations.Directus.Models;
+using IST_LEAD.LEAD_API.Common.Mapping;
+using IST_LEAD.LEAD_API.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
+
 
 namespace IST_LEAD.LEAD_API.Controllers;
 
@@ -29,20 +32,31 @@ namespace IST_LEAD.LEAD_API.Controllers;
 [ApiController]
 public class MatcherController : ControllerBase
 {
+    private IMapper Mapper { get; set; } = null!;
 
     private readonly IDirectusManager _directusManager;
     private readonly ICloudinaryManager _cloudinaryManager;
     private readonly IDbRepository _dbRepository;
-    private readonly IFileManager _fileManager;
     private readonly IVendCoderService _vendCoder;
+    private readonly IHandleExcelService _handleExcelService;
+    private readonly IProductBuilderService<OneProduct> _productsService;
 
-    public MatcherController(IDirectusManager directusManager, ICloudinaryManager cloudinaryManager,
-        IDbRepository dbRepository, IFileManager fileManager, IVendCoderService vendCoder)
+    public MatcherController(
+        IDirectusManager directusManager,
+        ICloudinaryManager cloudinaryManager,
+        IDbRepository dbRepository,
+        IHandleExcelService handleExcelService,
+        IProductBuilderService<OneProduct> productsService,
+
+        IVendCoderService vendCoder
+    )
     {
         _directusManager = directusManager;
         _cloudinaryManager = cloudinaryManager;
         _dbRepository = dbRepository;
-        _fileManager = fileManager;
+        _handleExcelService = handleExcelService;
+        _productsService = productsService;
+        
         _vendCoder = vendCoder;
     }
 
@@ -64,98 +78,100 @@ public class MatcherController : ControllerBase
         if (entity == null)
             throw new Exception("Unexpected error. There is no record with the file in the database");
         
-        // Сделать сервисом 
-        var excelHandler = new HandleExcelService(entity.FilePath, entity.FileName);
         
-        var ExcelColumnsValuesList = new List<ExcelColumnsList>();
-
+        var excelColumnsValuesList = new List<ExcelColumnValues>();
+        var excelHandler = _handleExcelService.Init(entity.FilePath, entity.FileName);
+        
         foreach (var el in json.Fields)
         {
-            var newColumn = new ExcelColumnsList()
+            var newColumn = new ExcelColumnValues
             {
-                Values = new List<string>()
+                Values = new List<string>(),
+                ColName = el.FieldName
             };
-            newColumn.ColName = el.FieldName;
-            newColumn = excelHandler.GetColumnValues(el.location, newColumn);
-            ExcelColumnsValuesList.Add(newColumn);
+            
+            excelColumnsValuesList.Add(
+                excelHandler.GetColumnValues(el.location, newColumn
+                ));
         }
-
+        
         var ExcelRows = excelHandler.GetNumOfExcelRows();
         excelHandler.ExcelDelete();
-        var newProducts = new List<OneProduct>();
-        for (int i = 0; i < ExcelRows; i++)
-        {
-            newProducts.Add(new OneProduct());
-        }
         
-        //New product Mapper
-        var ProductMapper = new HardFieldsHandler<OneProduct>(newProducts);
-        
-        //Set fields & slugs[PRODUCT_NAME -> SLUG] from Ex-Cols to Products 
-        foreach (var Column in ExcelColumnsValuesList)
-        {
-            ProductMapper.MapHardFields(Column, Column.Values.Count);
-        }
-        newProducts = ProductMapper.GetList();
-
-        //Get Images From Cloudinary
+        var directusProvider = _directusManager.GetProvider();
         var ProdImages = _cloudinaryManager.GetFilesFromFolder("ProductsImages", 100);
         var ImagesResult = JsonConvert.DeserializeObject<CloudinarySearch>(ProdImages);
-        
-        //Set Images [MFG_VEND_CODE -> Image]
-        ProductMapper.SetHardImage(newProducts, ImagesResult);
 
-        var directusProvider = _directusManager.GetProvider();
+        _productsService.InitProductsList(ExcelRows);
+        _productsService.HardFieldsActions.SetHardAttributes(excelColumnsValuesList);
+        _productsService.HardFieldsActions.ApplyImageQualifierAttributes(ImagesResult);
+
+        var outSerializedProductsList = new List<SerializationProduct>();
         
-        foreach (var product in newProducts)
+        var productList = _productsService.GetProducts();
+        foreach (var product in productList)
         {
-            var listOfCollections = ProductMapper.GetCollections(product);
+            var listOfProductCollections = 
+                _productsService.ProductCollections.GetCollections(product);
             
-            foreach (var collection in listOfCollections)
+            foreach (var collection in listOfProductCollections)
             {
                 var collectionName = collection.GetName();
-                
-                var relationWithField = directusProvider.Relations.FindRelationWithField(collectionName);
-                var targetRelations = await directusProvider.Relations.GetRelations(relationWithField.Result.Collection);
-                var relatredCollection =
-                    directusProvider.Relations.GetRelatedCollection(targetRelations, collectionName);
+                var related = await _directusManager.GetBaseCollectionByRelated(collectionName);
+                var OutCollections = await _directusManager.GetItemsAsCollections(related);
 
-                ItemsObject allItemsOfDirectusCollection = null;
-                
-                if (relatredCollection != null) 
-                    allItemsOfDirectusCollection = await directusProvider.Items.GetItems(relatredCollection);
+                _productsService.ProductCollections.CollectionsMatching
+                    (product, collection, OutCollections);
 
-
-                if (allItemsOfDirectusCollection != null)
-                {
-                    var newCollectionsMatcher = new CollectionsMatcher();
-                    var MatchedNamedCollection =
-                        newCollectionsMatcher.CollectionsMatching(collection, allItemsOfDirectusCollection);
-                    var CollectionOfMatchedCollection = MatchedNamedCollection.GetCollection();
-                    collection.SetCollection(CollectionOfMatchedCollection);
-                }
-                else
-                    throw new Exception("Collections matching error");
-                
-                ProductMapper.SetCollection(product, collection);
             }
+            
+            //SerializationProduct Just leave it for now and don't change it.
+            // Reflection needs to be redone. 😅
+            
+            var outProd = new SerializationProduct();
+            var fieldsSer = new FieldsSerializer<OneProduct, SerializationProduct>(outProd);
+            var serdProd = fieldsSer.GetSerializationAttributes(product);
+            outSerializedProductsList.Add(serdProd);
+            // ------------------------------------------------------------
         }
         
-        return Ok();
+    
+        SessionExtensions.SetObjectInSession(
+            HttpContext.Session, HttpContext.Session.Id,outSerializedProductsList);    
+            
+        var sessionData = Microsoft.AspNetCore.Http.SessionExtensions
+            .GetString(HttpContext.Session, HttpContext.Session.Id);
+        
+        return Ok(sessionData);
     }
     
     
-    // foreach (var product in newProducts)
+    [HttpGet]
+    [Route("get-session")]
+    public IActionResult SessionGet()
+    {
+
+        var res = SessionExtensions.GetCustomObjectFromSession<List<SerializationProduct>>
+            (HttpContext.Session, HttpContext.Session.Id);
+        
+        return Ok(Microsoft.AspNetCore.Http.SessionExtensions
+            .GetString(HttpContext.Session, HttpContext.Session.Id));
+    }
+    
+    
+    // var serdProdList = new List<SerializationProduct>();
+    //     foreach (var product in newProducts)
     // {
     //     var outProd = new SerializationProduct();
     //     var fieldsSer = new FieldsSerializer<OneProduct, SerializationProduct>(outProd);
-    //     var serdProd = fieldsSer.GetSerializationAttributes(product);
     //
+    //     var serdProd = fieldsSer.GetSerializationAttributes(product);
     //     var allProducts = await directusProvider.Items.GetItems("Products");
     //     var MaxProductIndex = allProducts.Items.Max(x => x.Id) + 1;
-    //
+    //     
     //     _vendCoder.setVendCode(serdProd, "vend_code", MaxProductIndex);
-    //
+    //     
+    //     serdProdList.Add(serdProd);
     // }
 
 

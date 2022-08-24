@@ -18,10 +18,22 @@ public class SerializationProduct
     public string included_text { get; set; }
     public string image_url { get; set; }
 
-    public List<int> product_manufacturer { get; set; }
-    public List<int> product_type { get; set; }
-    public List<int> product_unit { get; set; }
+    public List<SerializationCollection> product_manufacturer { get; set; }
+    public List<SerializationCollection> product_type { get; set; }
+    public List<SerializationCollection> product_unit { get; set; }
 
     public string vend_code { get; set; }
     
+}
+
+public class SerializationCollection
+{
+
+    public SerializationCollection(int id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

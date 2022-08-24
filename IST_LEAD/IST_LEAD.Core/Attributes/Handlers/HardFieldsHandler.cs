@@ -11,20 +11,6 @@ namespace IST_LEAD.Core.Attributes.Handlers;
 
 public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
 {
-
-    private static List<MapObject> ListOfEntities { get; set; }
-  
-
-    public HardFieldsHandler(List<MapObject> list)
-    {
-        ListOfEntities = list;
-    }
-
-    public List<MapObject> GetList()
-    {
-        return ListOfEntities;
-    }
-    
     private string CheckContains(BaseSearchResult list, string value)
     {
         foreach (var entity in list.resources)
@@ -38,12 +24,12 @@ public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
         return null;
     }
     
-    public void MapHardFields(ExcelColumnsList list, int numOfItems)
+    public void MapHardFields(ExcelColumnValues list, List<MapObject> products)
     {
         // var newTItem = new MapObject();
 
         int index = 0;
-        foreach (var entity in ListOfEntities)
+        foreach (var entity in products)
         {
             
             var type = typeof(MapObject);       
@@ -80,60 +66,8 @@ public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
             index++;
         }
     }
-
-    public List<NamedCollection> GetCollections(MapObject list)
-    {
-        var resListOfCollections = new List<NamedCollection>();
-
-        string CollectionName = null;
-        
-            var type = typeof(MapObject);       
-            var props = type.GetProperties();
-            foreach (var prop in props)
-            {
-                if (Attribute.IsDefined(prop, typeof(HardCollectionAttribute)))
-                {
-                    var propsValue = prop.GetValue(list);
-                    var valueType = propsValue.GetType().GetProperty("CategoryName", 
-                        BindingFlags.Instance 
-                        | BindingFlags.NonPublic
-                        | BindingFlags.DeclaredOnly);
-
-                  
-                    if (valueType != null && valueType.PropertyType == typeof(stringField))
-                    {
-                        var nameFromValue = valueType.GetValue(propsValue);
-                        if (nameFromValue != null)
-                        {
-                            var typeOfNameOfValue = nameFromValue.GetType().GetProperty("Field", 
-                                BindingFlags.Instance 
-                                | BindingFlags.NonPublic
-                                | BindingFlags.DeclaredOnly);
-                            
-                                CollectionName = typeOfNameOfValue.GetValue(nameFromValue).ToString();
-                        }
-                    }
-
-                    var newCollection = new Collection(
-                        slug: new slugField(CollectionName),
-                        id: 0,
-                        name: CollectionName
-                    );
-                    
-                    resListOfCollections.Add(new NamedCollection(
-                            collection: newCollection,
-                            name:  prop.GetCustomAttribute<HardCollectionAttribute>()?.CollectionName
-                        )
-                    );
-                }
-                else
-                    continue;
-            }
-
-            return resListOfCollections;
-    }
     
-    public void SetHardImage(List<MapObject> list,  BaseSearchResult images) 
+    public void SetHardImage(BaseSearchResult images, List<MapObject> list)
     {
         foreach (var obj in list)
         {
@@ -193,43 +127,5 @@ public class HardFieldsHandler<MapObject> where MapObject :  BaseProduct
             }
         }
     }
-
-    public void SetCollection(MapObject product, NamedCollection collection)
-    {
-        var newCollection = collection.GetCollection();
-        var newCollectionName = collection.GetName();
-        string CollectionName = null;
-        
-        var type = typeof(MapObject);       
-        var props = type.GetProperties();
-        
-        foreach (var prop in props)
-        {
-            if (Attribute.IsDefined(prop, typeof(HardCollectionAttribute)))
-            {
-                var collectionName = prop.GetCustomAttribute<HardCollectionAttribute>()?.CollectionName;
-                if (newCollectionName == collectionName)
-                {
-                    var arg = new Object[]
-                    {
-                        newCollection.Id,
-                        newCollection.Slug,
-                        newCollection.CategoryName.GetValue()
-                    };
-                    
-                    var instance = Activator.CreateInstance(
-                        prop.PropertyType, arg
-                    );
-                    
-                    if (instance != null)
-                    {
-                        prop.SetValue(product, instance, null);
-                    }
-                    
-                }
-            }
-        }
-    }
     
 }
-

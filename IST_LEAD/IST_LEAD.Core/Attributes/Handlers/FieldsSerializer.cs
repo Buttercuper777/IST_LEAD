@@ -13,7 +13,6 @@ public class FieldsSerializer<SerializeObject, OutputObject> where SerializeObje
     public FieldsSerializer(OutputObject obj)
     {
         ForOut = obj;
-
     }
     
     
@@ -71,19 +70,44 @@ public class FieldsSerializer<SerializeObject, OutputObject> where SerializeObje
                 if (outProp != null)
                 {
                     var propField = prop.GetValue(item, null);
-                    var propFieldValue = propField.GetType().GetProperty("Id",
+                    var propFieldValueId = propField.GetType().GetProperty("Id",
                         BindingFlags.Instance |
                         BindingFlags.NonPublic);
                     
-                    if (propFieldValue != null)
+                    var propFieldValueName = propField.GetType().GetProperty("CategoryName",
+                        BindingFlags.Instance |
+                        BindingFlags.NonPublic);
+                    
+                    if (propFieldValueId != null && propFieldValueName != null)
                     {
 
-                        var valueForAdd = propFieldValue.GetValue(propField, null);
+                        var valueIdForAdd = propFieldValueId.GetValue(propField, null);
+                        var valueNameForAdd = propFieldValueName.GetValue(propField, null);
                         
                         var IListRef = typeof (List<>);
-                        Type[] IListParam = {valueForAdd.GetType()};          
-                        object Result = Activator.CreateInstance(IListRef.MakeGenericType(IListParam));
-                        Result.GetType().GetMethod("Add").Invoke(Result, new[] {valueForAdd});
+                        Type[] IListParam = outProp.PropertyType.GetGenericArguments();
+
+                        var ValueFieldForAdd = valueNameForAdd.GetType().GetProperty("Field",
+                                BindingFlags.Instance |
+                                BindingFlags.DeclaredOnly |
+                                BindingFlags.NonPublic)
+                            .GetValue(valueNameForAdd, null);
+                        
+                        var args = new Object[]
+                        {
+                            valueIdForAdd, 
+                            ValueFieldForAdd
+                        };
+
+                        var ObjforAdd = Activator.CreateInstance(
+                            outProp.PropertyType.GenericTypeArguments[0],
+                            args);
+                        
+                        var Result = 
+                            Activator.CreateInstance(IListRef.MakeGenericType(
+                            IListParam));
+                        
+                        Result.GetType().GetMethod("Add").Invoke(Result, new[] {ObjforAdd});
                         
                         if (Result != null)
                             outProp.SetValue(ForOut, Result, null);

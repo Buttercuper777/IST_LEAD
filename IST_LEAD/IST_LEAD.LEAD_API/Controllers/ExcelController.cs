@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using IST_LEAD.BusinessLogic.Sevices;
+using IST_LEAD.Core.Abstract.Services;
 using IST_LEAD.DAL.Entities;
 using IST_LEAD.DAL.Repository;
 using IST_LEAD.Integrations.Directus;
@@ -18,9 +19,11 @@ namespace IST_LEAD.LEAD_API.Controllers
     {
 
         private readonly IDbRepository _dbRepository;
+        private readonly IHandleExcelService _handleExcelService;
         
-        public ExcelController(IDbRepository dbRepository)
+        public ExcelController(IDbRepository dbRepository, IHandleExcelService handleExcelService)
         {
+            _handleExcelService = handleExcelService;
             _dbRepository = dbRepository;
         }
         
@@ -48,7 +51,9 @@ namespace IST_LEAD.LEAD_API.Controllers
             {
                 var filePath = Entity.FilePath;
                 var fileName = Entity.FileName;
-                var excelHandler = new HandleExcelService(filePath, fileName);
+
+                
+                var excelHandler = _handleExcelService.Init(filePath, fileName);
                 var res = excelHandler.GetAllExcelColumns();
                 
                 return Content(res);
