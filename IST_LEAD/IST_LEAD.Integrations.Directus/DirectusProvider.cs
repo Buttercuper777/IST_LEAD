@@ -11,10 +11,13 @@ public class DirectusProvider
     public Relations Relations { get; set; }
     public Items Items { get; set; }
 
+    public Fields Fields { get; set; }
+
     public DirectusProvider(string accessToken, string basePath = "http://localhost:8055")
     {
         this.AccessToken = accessToken;
-        
+
+        this.Fields = new Fields(accessToken, basePath);
         this.Relations = new Relations(accessToken, basePath);
         this.Items = new Items(accessToken, basePath);
     }

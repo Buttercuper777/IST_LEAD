@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace IST_LEAD.Integrations.Directus.Models;
+namespace IST_LEAD.Integrations.Directus.Models.Relations;
 
 public class RelationsObject
 {

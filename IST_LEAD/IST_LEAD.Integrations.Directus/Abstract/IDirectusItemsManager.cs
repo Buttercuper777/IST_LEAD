@@ -1,4 +1,5 @@
 ﻿using IST_LEAD.Integrations.Directus.Models;
+using IST_LEAD.Integrations.Directus.Models.Items;
 
 namespace IST_LEAD.Integrations.Directus.Abstract;
 

@@ -1,16 +1,20 @@
-﻿using IST_LEAD.Core.Abstract;
+﻿using System.Reflection.Metadata;
+using IST_LEAD.Core.Abstract;
 using IST_LEAD.Core.ProductBuilder.Models.Fields;
 using IST_LEAD.Integrations.Directus.Customs.Collections;
 using IST_LEAD.Integrations.Directus.Customs.Excels;
+using IST_LEAD.Integrations.Directus.Extensions;
 using IST_LEAD.Integrations.Directus.Externals.Abstract;
 using IST_LEAD.Integrations.Directus.Models;
+using IST_LEAD.Integrations.Directus.Models.Items;
+using Microsoft.AspNetCore.Builder;
 using Newtonsoft.Json;
 
 namespace IST_LEAD.Integrations.Directus.Externals.Implementation;
 
 public class DirectusManager : IDirectusManager
 {
-    public DirectusProvider _provider;
+    private DirectusProvider _provider;
     
     public DirectusManager(DirectusProvider newProvider)
     {
@@ -63,5 +67,14 @@ public class DirectusManager : IDirectusManager
 
         return default(T);
 
+    }
+
+    public string GetDirectusCreationJson<T>(T outModel, string directusJsonPropValue)
+    {
+        var outModelType = typeof(T);
+        string outJson = JsonConvert.SerializeObject(outModel, Formatting.Indented, 
+            new JsonConverterExtension(directusJsonPropValue, outModelType));
+
+        return outJson;
     }
 }

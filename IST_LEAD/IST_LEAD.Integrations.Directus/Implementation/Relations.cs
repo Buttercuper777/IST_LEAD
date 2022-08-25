@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using IST_LEAD.Integrations.Directus.Abstract;
 using IST_LEAD.Integrations.Directus.Models;
+using IST_LEAD.Integrations.Directus.Models.Relations;
 
 namespace IST_LEAD.Integrations.Directus.Implementation;
 
