@@ -1,5 +1,5 @@
 # IST LEAD
-### Client documentation
+## Client documentation
 ![](https://img.shields.io/badge/-Node.Js-6cc24a?logo=nodedotjs&logoColor=white) ![](https://img.shields.io/badge/-Directus-8866ff?logo=directus&logoColor=white) ![](https://img.shields.io/badge/-Next.Js-61DAFB?logo=nextdotjs&logoColor=black) ![](https://img.shields.io/badge/-PostgreSQL-3881C1?logo=postgresql&logoColor=white)
 
 - Clone this repository
@@ -8,7 +8,7 @@
 - Create an env file to configure the application.
 Creation path:  `Application/lead_client/.env.local`
 
-####.env file example:
+### .env file example:
     #GRAPHQL URL's
         GRAPHQL = YOUR GRAPHQL API 
         NEXT_PUBLIC_GRAPHQL = YOUR PUBLIC GRAPHQL API
@@ -22,7 +22,7 @@ Creation path:  `Application/lead_client/.env.local`
     #.NET API
         NEXT_PUBLIC_LEAD_API = APPLICATION API PATH
 
-####Running application:
+### Running application:
  - **[Next.js documentation](https://nextjs.org/docs#manual-setup "NextJS documentation")**
  
 ```javascript
@@ -34,14 +34,14 @@ Creation path:  `Application/lead_client/.env.local`
 }
 ```
 ------------
-### Server documentation
-![](https://img.shields.io/badge/-.NET -512bd4?logo=dotnet&logoColor=white) ![](https://img.shields.io/badge/-Cloudinary-4573D5?logo=&logoColor=white) ![](https://img.shields.io/badge/-PostgreSQL-3881C1?logo=postgresql&logoColor=white)
+## Server documentation
+![](https://img.shields.io/badge/-.NET-512bd4?logo=dotnet&logoColor=white) ![](https://img.shields.io/badge/-Cloudinary-4573D5?logo=&logoColor=white) ![](https://img.shields.io/badge/-PostgreSQL-3881C1?logo=postgresql&logoColor=white)
 
 - Go to `Application/IST_LEAD/IST_LEAD.LEAD_API`
 - Create an env file to configure the application.
 Creation path:  `Application/IST_LEAD/IST_LEAD.LEAD_API/.env`
 
-####.env file example:
+### .env file example:
     #Cloudinary Account
         CloudName='NAME'
         ApiKey='API KEY'
