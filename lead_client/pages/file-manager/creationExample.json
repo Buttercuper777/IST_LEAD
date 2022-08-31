@@ -1,0 +1,142 @@
+[
+  {
+    "type_of_equipment": [
+      "elevator"
+    ],
+    "slug": "vkladyish-bashmaka-otis-rebristaya-spinka-l100mm-napravlyayuschaya-16mm-t2-paz-17mm-vyisota-reber-45mm",
+    "product_name_ru": "Вкладыш башмака OTIS ребристая спинка L100мм направляющая 16мм (T2) паз 17мм, высота ребер 4,5мм",
+    "product_name": "Content is filling",
+    "vend_code": "   FO380CP3",
+    "weight": "0,08",
+    "text_description": "Вкладыш башмака OTIS ребристая спинка L100мм направляющая 16мм (T2) паз 17мм, высота ребер 4,5мм",
+    "price": "",
+    "sizes": "Check by phone",
+    "analogue_text": "Check by phone",
+    "replacement_text": "Check by phone",
+    "included_text": "Check by phone",
+    "image_url": "https://res.cloudinary.com/dv9xitsjg/image/upload/v1660219704/Empty_Prod_image_hgbdyr.svg",
+    "product_manufacturer": [
+      {
+        "Id": 12,
+        "Name": "OTIS"
+      }
+    ],
+    "product_type": [
+      {
+        "Id": 0,
+        "Name": "Башмак, вкладыш башмака направляющих кабины и противовеса"
+      }
+    ],
+    "product_unit": [
+      {
+        "Id": 0,
+        "Name": "Кабина (каркас) и интерьер кабины лифта, крыша кабины, противовес"
+      }
+    ]
+  },
+  {
+    "type_of_equipment": [
+      "escalator"
+    ],
+    "slug": "knopka-stop-balyustradyi-eskalatora-idec-abw201r-506nce606nct",
+    "product_name_ru": "Кнопка \"стоп\" балюстрады эскалатора IDEC ABW201R (506NCE/606NCT)",
+    "product_name": "Content is filling",
+    "vend_code": "         DAA177NPH1",
+    "weight": "0,06",
+    "text_description": "Кнопка \"стоп\" балюстрады эскалатора IDEC ABW201R (506NCE/606NCT)",
+    "price": "",
+    "sizes": "Check by phone",
+    "analogue_text": "Check by phone",
+    "replacement_text": "Check by phone",
+    "included_text": "Check by phone",
+    "image_url": "https://res.cloudinary.com/dv9xitsjg/image/upload/v1660219704/Empty_Prod_image_hgbdyr.svg",
+    "product_manufacturer": [
+      {
+        "Id": 0,
+        "Name": "KONE"
+      }
+    ],
+    "product_type": [
+      {
+        "Id": 0,
+        "Name": "Кнопка стоп или переключатель (без ключа)"
+      }
+    ],
+    "product_unit": [
+      {
+        "Id": 0,
+        "Name": "Поручень, балюстрада, юбки, холостая ветвь поручня, привод поручня, устья"
+      }
+    ]
+  },
+  {
+    "type_of_equipment": [
+      "escalator"
+    ],
+    "slug": "komplekt-amortizatorov-4sht-lebedki-13vtr-zaa310h1-otis",
+    "product_name_ru": "Комплект амортизаторов (4шт) лебедки 13VTR ZAA310H1 Otis",
+    "product_name": "Content is filling",
+    "vend_code": "        ABC1",
+    "weight": "12",
+    "text_description": "Комплект амортизаторов (4шт) лебедки 13VTR ZAA310H1 Otis",
+    "price": "",
+    "sizes": "Check by phone",
+    "analogue_text": "Check by phone",
+    "replacement_text": "Check by phone",
+    "included_text": "Check by phone",
+    "image_url": "https://res.cloudinary.com/dv9xitsjg/image/upload/v1660219704/Empty_Prod_image_hgbdyr.svg",
+    "product_manufacturer": [
+      {
+        "Id": 0,
+        "Name": "3thMFG"
+      }
+    ],
+    "product_type": [
+      {
+        "Id": 0,
+        "Name": "Резиновая/пластиковая прокладка, буфер, демпфер, вставка, отбойник"
+      }
+    ],
+    "product_unit": [
+      {
+        "Id": 0,
+        "Name": "Главный привод, лебедка лифта, гидравлическая станция и гидробак"
+      }
+    ]
+  },
+  {
+    "type_of_equipment": [
+      "elevator"
+    ],
+    "slug": "datchik-lichtschrankecedes-art-nr-103989-anschl-dc-24-v-tip-lkln",
+    "product_name_ru": "Датчик Lichtschranke/CEDES Art-Nr 103989 Anschl DC 24 V (тип LK/LN)",
+    "product_name": "Content is filling",
+    "vend_code": "        ABC2",
+    "weight": "5",
+    "text_description": "Датчик Lichtschranke/CEDES Art-Nr 103989 Anschl DC 24 V (тип LK/LN)",
+    "price": "",
+    "sizes": "Check by phone",
+    "analogue_text": "Check by phone",
+    "replacement_text": "Check by phone",
+    "included_text": "Check by phone",
+    "image_url": "https://res.cloudinary.com/dv9xitsjg/image/upload/v1660219704/Empty_Prod_image_hgbdyr.svg",
+    "product_manufacturer": [
+      {
+        "Id": 0,
+        "Name": "4thMFG"
+      }
+    ],
+    "product_type": [
+      {
+        "Id": 0,
+        "Name": "Выключатели концевые, микровыключатели, контакты"
+      }
+    ],
+    "product_unit": [
+      {
+        "Id": 0,
+        "Name": "Привод дверей и двери шахты лифта, панели ДК/ДШ"
+      }
+    ]
+  }
+]
